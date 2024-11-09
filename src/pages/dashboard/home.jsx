@@ -12,6 +12,7 @@ import {
   Avatar,
   Tooltip,
   Progress,
+  Button,
 } from "@material-tailwind/react";
 import {
   EllipsisVerticalIcon,
@@ -26,10 +27,21 @@ import {
   ordersOverviewData,
 } from "@/data";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
+import axios from "axios";
+import { Notifications, Profile, Tables } from ".";
 
 export function Home() {
+
+
+  const getRandomPerson = () => {
+    axios.get("https://randomuser.me/api/").then((response) => {
+      console.log("DATA AXIOS",response.data.results[0]);
+    })
+  };
   return (
     <div className="mt-12">
+      <Button>Button</Button>
+      {getRandomPerson()}
       <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
         {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
           <StatisticsCard
@@ -251,6 +263,10 @@ export function Home() {
           </CardBody>
         </Card>
       </div>
+      <Notifications />
+      <Tables />
+      <Profile />
+
     </div>
   );
 }

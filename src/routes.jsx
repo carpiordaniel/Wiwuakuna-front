@@ -29,18 +29,7 @@ export const routes = [
         path: "/profile",
         element: <Profile />,
       },
-      {
-        icon: <TableCellsIcon {...icon} />,
-        name: "tables",
-        path: "/tables",
-        element: <Tables />,
-      },
-      {
-        icon: <InformationCircleIcon {...icon} />,
-        name: "notifications",
-        path: "/notifications",
-        element: <Notifications />,
-      },
+      
     ],
   },
   {
@@ -61,6 +50,7 @@ export const routes = [
       },
     ],
   },
+  
 ];
 
 export default routes;
