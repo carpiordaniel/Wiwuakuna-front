@@ -1,0 +1,18 @@
+.active-link {
+  background-color: #333333 !important;
+  color: white !important;
+}
+
+.active-link .MuiListItemIcon-root {
+  color: white !important;
+}
+
+.active-link {
+  background-color: red;
+}
+.border-radius-lg {
+  border-radius: 20px;
+}
+.swal2-container {
+  z-index: 9999 !important;
+}

@@ -3,3 +3,10 @@
 
 //DOC AXIOS
 // https://axios-http.com/docs/post_example
+
+export const COLORS = {
+  "PRIMARY": "#333333",
+
+}
+
+export default COLORS;
