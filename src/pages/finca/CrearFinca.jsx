@@ -23,13 +23,11 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
     validationSchema: crearFincaValidationSchema,
     onSubmit: async ( values ) => {
       console.log( 'Formulario enviado:', values );
-      // Aquí puedes manejar la lógica del formulario
       try {
         console.log( 'Formulario enviado:', values );
         // Espera a que la solicitud axios termine
-        const response = await axios.post( 'http://localhost:3000/finca', values );
+        const response = await axios.post( `${ENDPOINTS.POST_FINCA}`, values );
 
-        // Muestra el SweetAlert
         Swal.fire( {
           icon: response.status === 200 ? 'success' : 'error',
           title: response.status === 200 ? 'Finca creada correctamente' : 'Error al crear la finca',
@@ -38,7 +36,6 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
         } );
       } catch ( error ) {
         console.error( 'Error al enviar el formulario:', error );
-        // Muestra un error si ocurre durante la solicitud
         Swal.fire( {
           icon: 'error',
           title: 'Hubo un error al procesar la solicitud',

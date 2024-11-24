@@ -1,5 +1,5 @@
 // routes.jsx
-import { Info, AccountCircle, Dashboard, House } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
+import { Info, AccountCircle, Dashboard, House, Login } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
 import Home from "./pages/dashboard/home";
 import Profile from "./pages/dashboard/profile";
 import Tables from "./pages/dashboard/tables";
@@ -9,8 +9,10 @@ import AgricultureIcon from '@mui/icons-material/Agriculture';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import Finca from "./pages/finca/Finca";
+import SignIn from "./pages/auth/sign-in";
 
 export const routes = [
+
   {
     path: "/",
     element: <Home />,
