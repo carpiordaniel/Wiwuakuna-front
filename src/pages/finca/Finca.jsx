@@ -5,7 +5,8 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS } from '../../globals/constantes'
+import { COLORS, ENDPOINTS } from './../../globals/constantes';
+
 import CrearFinca from './CrearFinca';
 
 import "./../../style.css"
@@ -92,7 +93,7 @@ const Finca = () => {
       confirmButtonText: 'Sí, eliminar',
     } ).then( ( result ) => {
       if ( result.isConfirmed ) {
-        const response = axios.delete( `http://localhost:3000/finca/${id}` );
+        const response = axios.delete( `${ENDPOINTS.DELETE_FINCA}/${id}` );
         Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
       }
     } );
