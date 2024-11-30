@@ -22,9 +22,7 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
     },
     validationSchema: crearFincaValidationSchema,
     onSubmit: async ( values ) => {
-      console.log( 'Formulario enviado:', values );
       try {
-        console.log( 'Formulario enviado:', values );
         // Espera a que la solicitud axios termine
         const response = await axios.post( `${ENDPOINTS.POST_FINCA}`, values );
 

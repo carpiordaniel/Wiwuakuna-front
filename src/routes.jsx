@@ -1,5 +1,5 @@
 // routes.jsx
-import { Info, AccountCircle, Dashboard, House, Login } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
+import { Info, AccountCircle, Dashboard, House, Login, Logout } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
 import Home from "./pages/dashboard/home";
 import Profile from "./pages/dashboard/profile";
 import Tables from "./pages/dashboard/tables";
@@ -10,6 +10,7 @@ import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import Finca from "./pages/finca/Finca";
 import SignIn from "./pages/auth/sign-in";
+import LogoutButton from "./components/LogoutButton";
 
 export const routes = [
 
@@ -48,6 +49,12 @@ export const routes = [
     element: <Profile />,
     label: "Inventario",
     icon: <DomainVerificationIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/logout",
+    element: <LogoutButton />,
+    label: "Cerrar Sesión",
+    icon: <Logout /> // Ícono de la página "Profile"
   },
 ];
 

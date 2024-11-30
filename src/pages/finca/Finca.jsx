@@ -82,7 +82,6 @@ const Finca = () => {
   ];
 
   const handleEliminar = ( id ) => {
-    console.log( id )
     Swal.fire( {
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',

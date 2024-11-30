@@ -2,7 +2,7 @@ export const COLORS = {
   PRIMARY: "#333333",
 };
 
-export const URL_BASE = "http://localhost:3000";
+export const URL_BASE = "http://localhost:8081";
 
 export const ENDPOINTS = {
   GET_FINCA: `${URL_BASE}/finca`,

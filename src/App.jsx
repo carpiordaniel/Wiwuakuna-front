@@ -7,7 +7,7 @@ import SignIn from "./pages/auth/sign-in";
 
 
 function App() {
-  
+
   const isAuthenticated = localStorage.getItem('isAuthenticated');
 
 
@@ -27,10 +27,8 @@ function App() {
     // </Routes>
 
     <Routes>
-      {/* Ruta de Login */}
       <Route path="/login" element={<SignIn />} />
 
-      {/* Ruta principal con layout, solo si está autenticado */}
       <Route
         path="/"
         element={isAuthenticated ? <SidebarLayout routes={routes} /> : <Navigate to="/login" />}
@@ -40,7 +38,6 @@ function App() {
         ) )}
       </Route>
 
-      {/* Ruta para redirigir a login si no está autenticado */}
       <Route path="*" element={<Navigate to="/login" />} />
     </Routes>
 

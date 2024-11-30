@@ -5,8 +5,12 @@ import {
   Button,
   Typography,
 } from "@material-tailwind/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { URL_BASE } from "../../globals/constantes";
+import axios from "axios";
+import { SwipeLeftAlt } from "@mui/icons-material";
+import Swal from "sweetalert2";
 
 
 export function SignIn() {
@@ -16,15 +20,45 @@ export function SignIn() {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    console.log(username, password);
-    // Verificar las credenciales del usuario (aquí usaremos datos simulados)
-    if (username === 'admin' && password === 'admin') {
-      // Guardar el estado de autenticación en localStorage
-      localStorage.setItem('isAuthenticated', 'true');
-      navigate('/'); // Redirigir al home o página principal
-    } else {
-      alert('Credenciales incorrectas');
+  useEffect(() => {
+    if (localStorage.getItem('token')) {
+      navigate('/'); // Redirige al usuario si ya está autenticado
+    }
+  }, [navigate]); 
+
+  const handleLogin = async () => {
+
+    try {
+      const data = {
+        username: username,
+        password: password
+      }
+
+      const response = await axios.post(`${URL_BASE}/auth/login`, data, {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      const token = response.data;
+      console.log(token);  
+      localStorage.setItem('token', token);
+      
+      console.log('Login exitoso:', response.data);
+      if (response.status === 200) {
+        navigate('/');
+      }
+    } catch (error) {
+      console.log(error);
+      Swal.fire( {
+        title: 'Error al iniciar sesión',
+        text: error.message,
+        icon: 'warning',
+        confirmButtonText: 'Aceptar',
+        confirmButtonColor: '#3085d6',  
+      } )
+  
     }
   };
 
