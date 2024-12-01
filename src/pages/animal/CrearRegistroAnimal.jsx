@@ -2,11 +2,11 @@ import React from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import { COLORS, ENDPOINTS } from '../../globals/constantes';
-import { crearInstalacionValidationSchema } from './validacion'; // Importa el esquema
+import { crearRegistroAnimalValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-export const CrearInstalacion = ( { accion = "registrar", data } ) => {
+export const CrearRegistroAnimal = ( { accion = "registrar", data } ) => {
   const top100Films = [
     { label: 'The Shawshank Redemption', year: 1994 },
     { label: 'The Godfather', year: 1972 },
@@ -15,11 +15,14 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
   const formik = useFormik( {
     initialValues: {
       tipo: data?.tipo || '',
-      finca: data?.finca || '',
+      codigo: data?.codigo || '',
+      sexo: data?.sexo || '',
+      lote: data?.lote || '',
+      estado: data?.estado || '',
       nombre: data?.nombre || '',
-      responsable: data?.responsable || '',
+      grupo: data?.grupo || '',
     },
-    validationSchema: crearInstalacionValidationSchema,
+    validationSchema: crearRegistroAnimalValidationSchema,
     onSubmit: async ( values ) => {
       try {
         // Espera a que la solicitud axios termine
@@ -52,11 +55,9 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
         sx={{ margin: '40px 10px', }}
       >
         <Typography variant="h5" mb={3} align="center">
-          {accion === "editar" ? "Editar Instalación" : "Registrar Instalación"}
+          {accion === "editar" ? "Editar registro de animal" : "Registro de animal"}
         </Typography>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1rem' }}>
-
-
 
           <Autocomplete
             disablePortal
@@ -74,25 +75,64 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
             )}
           />
 
+          <TextField
+            fullWidth
+            label="codigo"
+            name="codigo"
+            value={formik.values.codigo}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.codigo && Boolean( formik.errors.codigo )}
+            helperText={formik.touched.codigo && formik.errors.codigo}
+          />
+
           <Autocomplete
             disablePortal
             options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.finca}
-            onChange={( event, newValue ) => formik.setFieldValue( 'finca', newValue )}
+            value={formik.values.sexo}
+            onChange={( event, newValue ) => formik.setFieldValue( 'sexo', newValue )}
             renderInput={( params ) => (
               <TextField
                 {...params}
-                label="Finca"
-                name="finca"
-                error={formik.touched.finca && Boolean( formik.errors.finca )}
-                helperText={formik.touched.finca && formik.errors.finca}
+                label="sexo"
+                name="sexo"
+                error={formik.touched.sexo && Boolean( formik.errors.sexo )}
+                helperText={formik.touched.sexo && formik.errors.sexo}
               />
             )}
           />
 
           <TextField
             fullWidth
-            label="Nombre"
+            label="lote"
+            name="lote"
+            value={formik.values.lote}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.lote && Boolean( formik.errors.lote )}
+            helperText={formik.touched.lote && formik.errors.lote}
+          />
+
+          <Autocomplete
+            disablePortal
+            options={top100Films.map( ( option ) => option.label )}
+            value={formik.values.estado}
+            onChange={( event, newValue ) => formik.setFieldValue( 'estado', newValue )}
+            renderInput={( params ) => (
+              <TextField
+                {...params}
+                label="estado"
+                name="estado"
+                error={formik.touched.estado && Boolean( formik.errors.estado )}
+                helperText={formik.touched.estado && formik.errors.estado}
+              />
+            )}
+          />
+
+
+          <TextField
+            fullWidth
+            label="nombre"
             name="nombre"
             value={formik.values.nombre}
             onChange={formik.handleChange}
@@ -101,23 +141,24 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
             helperText={formik.touched.nombre && formik.errors.nombre}
           />
 
+
           <Autocomplete
             disablePortal
             options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.responsable}
-            onChange={( event, newValue ) => formik.setFieldValue( 'responsable', newValue )}
+            value={formik.values.grupo}
+            onChange={( event, newValue ) => formik.setFieldValue( 'grupo', newValue )}
             renderInput={( params ) => (
               <TextField
                 {...params}
-                label="Responsable"
-                name="responsable"
-                error={formik.touched.responsable && Boolean( formik.errors.responsable )}
-                helperText={formik.touched.responsable && formik.errors.responsable}
+                label="grupo"
+                name="grupo"
+                error={formik.touched.grupo && Boolean( formik.errors.grupo )}
+                helperText={formik.touched.grupo && formik.errors.grupo}
               />
             )}
           />
 
-        
+
         </div>
 
         <Button

@@ -11,6 +11,9 @@ import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
 import {Finca} from "./pages/finca/Finca";
 import LogoutButton from "./components/LogoutButton";
 import { Instalacion } from "./pages/instalacion/Instalacion";
+import { RegistroProduccion } from "./pages/registro-produccion/RegistroProduccion";
+import { RegistroVeterinario } from "./pages/registro-veterinario/RegistroVeterinario";
+import { RegistroAnimal } from "./pages/animal/RegistroAnimal";
 
 export const routes = [
 
@@ -33,21 +36,21 @@ export const routes = [
     icon: <BubbleChartIcon /> // Ícono de la página "Profile"
   },
   {
-    path: "/produccion",
-    element: <Profile />,
-    label: "Producción",
+    path: "/registro-produccion",
+    element: <RegistroProduccion />,
+    label: "Registro Producción",
     icon: <AgricultureIcon /> // Ícono de la página "Profile"
   },
   {
-    path: "/reproduccion",
-    element: <Profile />,
-    label: "Reproducción",
+    path: "/registro-veterino",
+    element: <RegistroVeterinario />,
+    label: "Registro Veterinario",
     icon: <MoreTimeIcon /> // Ícono de la página "Profile"
   },
   {
-    path: "/inventario",
-    element: <Profile />,
-    label: "Inventario",
+    path: "/animal",
+    element: <RegistroAnimal />,
+    label: "Animal",
     icon: <DomainVerificationIcon /> // Ícono de la página "Profile"
   },
   {

@@ -2,7 +2,7 @@ import React from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import { COLORS, ENDPOINTS } from '../../globals/constantes';
-import { crearInstalacionValidationSchema } from './validacion'; // Importa el esquema
+import { crearRegistroProduccionValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
@@ -14,12 +14,15 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
 
   const formik = useFormik( {
     initialValues: {
+      animal: data?.animal || '',
       tipo: data?.tipo || '',
-      finca: data?.finca || '',
-      nombre: data?.nombre || '',
+      fecha: data?.fecha || '',
+      hora: data?.hora || '',
+      cantidad: data?.cantidad || '',
+      nota: data?.nota || '',
       responsable: data?.responsable || '',
     },
-    validationSchema: crearInstalacionValidationSchema,
+    validationSchema: crearRegistroProduccionValidationSchema,
     onSubmit: async ( values ) => {
       try {
         // Espera a que la solicitud axios termine
@@ -52,11 +55,27 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
         sx={{ margin: '40px 10px', }}
       >
         <Typography variant="h5" mb={3} align="center">
-          {accion === "editar" ? "Editar Instalación" : "Registrar Instalación"}
+          {accion === "editar" ? "Editar producción" : "Registrar producción"}
         </Typography>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1rem' }}>
 
 
+
+          <Autocomplete
+            disablePortal
+            options={top100Films.map( ( option ) => option.label )}
+            value={formik.values.animal}
+            onChange={( event, newValue ) => formik.setFieldValue( 'animal', newValue )}
+            renderInput={( params ) => (
+              <TextField
+                {...params}
+                label="Animal"
+                name="animal"
+                error={formik.touched.animal && Boolean( formik.errors.animal )}
+                helperText={formik.touched.animal && formik.errors.animal}
+              />
+            )}
+          />
 
           <Autocomplete
             disablePortal
@@ -74,32 +93,52 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
             )}
           />
 
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.finca}
-            onChange={( event, newValue ) => formik.setFieldValue( 'finca', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Finca"
-                name="finca"
-                error={formik.touched.finca && Boolean( formik.errors.finca )}
-                helperText={formik.touched.finca && formik.errors.finca}
-              />
-            )}
+          <TextField
+            type='date'
+            fullWidth
+
+            name="fecha"
+            value={formik.values.fecha}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.fecha && Boolean( formik.errors.fecha )}
+            helperText={formik.touched.fecha && formik.errors.fecha}
+          />
+
+          <TextField
+            type='hour'
+            fullWidth
+            label="hora"
+            name="hora"
+            value={formik.values.hora}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.hora && Boolean( formik.errors.hora )}
+            helperText={formik.touched.hora && formik.errors.hora}
           />
 
           <TextField
             fullWidth
-            label="Nombre"
-            name="nombre"
-            value={formik.values.nombre}
+            label="cantidad"
+            name="cantidad"
+            value={formik.values.cantidad}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.nombre && Boolean( formik.errors.nombre )}
-            helperText={formik.touched.nombre && formik.errors.nombre}
+            error={formik.touched.cantidad && Boolean( formik.errors.cantidad )}
+            helperText={formik.touched.cantidad && formik.errors.cantidad}
           />
+
+          <TextField
+            fullWidth
+            label="nota"
+            name="nota"
+            value={formik.values.nota}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.nota && Boolean( formik.errors.nota )}
+            helperText={formik.touched.nota && formik.errors.nota}
+          />
+
 
           <Autocomplete
             disablePortal
@@ -117,7 +156,7 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
             )}
           />
 
-        
+
         </div>
 
         <Button
