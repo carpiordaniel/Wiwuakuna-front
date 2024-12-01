@@ -1,5 +1,5 @@
 // routes.jsx
-import { Info, AccountCircle, Dashboard, House, Login, Logout } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
+import { Info, AccountCircle, Dashboard, House, Login, Logout, Group } from "@mui/icons-material"; // Asegúrate de tener instalada la librería de Material Icons
 import Home from "./pages/dashboard/home";
 import Profile from "./pages/dashboard/profile";
 import Tables from "./pages/dashboard/tables";
@@ -14,6 +14,17 @@ import { Instalacion } from "./pages/instalacion/Instalacion";
 import { RegistroProduccion } from "./pages/registro-produccion/RegistroProduccion";
 import { RegistroVeterinario } from "./pages/registro-veterinario/RegistroVeterinario";
 import { RegistroAnimal } from "./pages/animal/RegistroAnimal";
+import { RegistroReproduccion } from "./pages/registro-reproduccion/RegistroReproduccion";
+import { RegistroGrupoAnimal } from "./pages/grupo-animal/RegistroGrupoAnimal";
+import { RegistroLote } from "./pages/lote/RegistroLote";
+import { RegistroResponsable } from "./pages/responsable/RegistroResponsables";
+import { UserCircleIcon } from "@heroicons/react/24/solid";
+import SensorOccupiedIcon from '@mui/icons-material/SensorOccupied';
+import AnimationIcon from '@mui/icons-material/Animation';
+import InventoryIcon from '@mui/icons-material/Inventory';
+import MotionPhotosAutoIcon from '@mui/icons-material/MotionPhotosAuto';
+import WorkspacesIcon from '@mui/icons-material/Workspaces';
+import EngineeringIcon from '@mui/icons-material/Engineering';
 
 export const routes = [
 
@@ -38,7 +49,7 @@ export const routes = [
   {
     path: "/registro-produccion",
     element: <RegistroProduccion />,
-    label: "Registro Producción",
+    label: "Producción",
     icon: <AgricultureIcon /> // Ícono de la página "Profile"
   },
   {
@@ -51,7 +62,31 @@ export const routes = [
     path: "/animal",
     element: <RegistroAnimal />,
     label: "Animal",
-    icon: <DomainVerificationIcon /> // Ícono de la página "Profile"
+    icon: <MotionPhotosAutoIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/reproduccion",
+    element: <RegistroReproduccion />,
+    label: "Reproducción",
+    icon: <AnimationIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/grupo-animal",
+    element: <RegistroGrupoAnimal />,
+    label: "Grupo Animal",
+    icon: <WorkspacesIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/lote",
+    element: <RegistroLote />,
+    label: "Lote",
+    icon: <InventoryIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/responsable",
+    element: <RegistroResponsable />,
+    label: "Responsable",
+    icon: <EngineeringIcon /> // Ícono de la página "Profile"
   },
   {
     path: "/logout",
