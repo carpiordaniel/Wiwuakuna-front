@@ -5,9 +5,9 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, ENDPOINTS } from './../../globals/constantes';
+import { COLORS, ENDPOINTS } from '../../globals/constantes';
 
-import CrearFinca from './CrearFinca';
+import {CrearInstalacion} from './CrearInstalacion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
@@ -15,17 +15,17 @@ import axios from 'axios';
 
 
 const rows = [
-  { id: 1, nombre: 'Finca 1', dimension: 100, pais: 'Pais 1', ciudad: 'Ciudad 1', responsable: 'Responsable 1' },
-  { id: 2, nombre: 'Finca 2', dimension: 200, pais: 'Pais 2', ciudad: 'Ciudad 2', responsable: 'Responsable 2' },
-  { id: 3, nombre: 'Finca 3', dimension: 300, pais: 'Pais 3', ciudad: 'Ciudad 3', responsable: 'Responsable 3' },
-  { id: 4, nombre: 'Finca 4', dimension: 400, pais: 'Pais 4', ciudad: 'Ciudad 4', responsable: 'Responsable 4' },
-  { id: 5, nombre: 'Finca 5', dimension: 500, pais: 'Pais 5', ciudad: 'Ciudad 5', responsable: 'Responsable 5' },
+  { id: 1, tipo: 'Tipo 1', finca: 'Finca 1', nombre: 'Instalacion 1', responsable: 'Responsable 1' },
+  { id: 2, tipo: 'Tipo 2', finca: 'Finca 2', nombre: 'Instalacion 2', responsable: 'Responsable 2' },
+  { id: 3, tipo: 'Tipo 3', finca: 'Finca 3', nombre: 'Instalacion 3', responsable: 'Responsable 3' },
+  { id: 4, tipo: 'Tipo 4', finca: 'Finca 4', nombre: 'Instalacion 4', responsable: 'Responsable 4' },
+  { id: 5, tipo: 'Tipo 5', finca: 'Finca 5', nombre: 'Instalacion 5', responsable: 'Responsable 5' },
 ];
 
 const paginationModel = { page: 0, pageSize: 5 };
 
 
-export const Finca = () => {
+export const Instalacion = () => {
 
   const [ open, setOpen ] = useState( false );
   const [ dataFinca, setDataFinca ] = useState([]);
@@ -35,17 +35,22 @@ export const Finca = () => {
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
+    { field: 'tipo', headerName: 'Tipo', flex: 1 },
+    { field: 'finca', headerName: 'Finca', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'dimension', headerName: 'Dimensión', flex: 1},
-    { field: 'pais', headerName: 'Pais', flex: 1},
-    { field: 'ciudad', headerName: 'Ciudad', flex: 1},
-    { field: 'responsable', headerName: 'Responsable', flex: 1},
-    { field: 'action', headerName: 'Action', flex: 1,
+    { field: 'responsable', headerName: 'Responsable', flex: 1 },
+    
+    {
+      field: 'action',
+      headerName: 'Action',
+      flex: 1,
       renderCell: ( params ) => (
         <>
           <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
           <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
         </>
+
+
       ),
     }
   ];
@@ -93,12 +98,12 @@ export const Finca = () => {
 
   return (
     <Paper sx={{ width: '100%' }}>
-      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de Finca</Typography>
+      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de instalaciones</Typography>
 
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar Finca</Button>
+      }} onClick={() => handleOpenModal( "crear" )}>Agregar Instalacion</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -119,7 +124,7 @@ export const Finca = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearFinca accion={accion} />
+            <CrearInstalacion accion={accion} />
           </Box>
         </Modal>
 
@@ -135,4 +140,5 @@ export const Finca = () => {
     </Paper >
   );
 }
+
 

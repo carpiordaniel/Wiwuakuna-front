@@ -1,12 +1,12 @@
 import React from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, ENDPOINTS } from './../../globals/constantes';
-import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
+import { COLORS, ENDPOINTS } from '../../globals/constantes';
+import { crearInstalacionValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
 
-const CrearFinca = ( { accion = "registrar", data } ) => {
+export const CrearInstalacion = ( { accion = "registrar", data } ) => {
   const top100Films = [
     { label: 'The Shawshank Redemption', year: 1994 },
     { label: 'The Godfather', year: 1972 },
@@ -14,14 +14,12 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
 
   const formik = useFormik( {
     initialValues: {
-      codigo: data?.codigo || '',
-      nombre: data?.nombre || '',
-      dimension: data?.dimension || '',
-      pais: data?.pais || '',
-      ciudad: data?.ciudad || '',
+      tipo: data?.nombre || '',
+      finca: data?.dimension || '',
+      nombre: data?.pais || '',
       responsable: data?.responsable || '',
     },
-    validationSchema: crearFincaValidationSchema,
+    validationSchema: crearInstalacionValidationSchema,
     onSubmit: async ( values ) => {
       try {
         // Espera a que la solicitud axios termine
@@ -54,9 +52,43 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
         sx={{ margin: '40px 10px', }}
       >
         <Typography variant="h5" mb={3} align="center">
-          {accion === "editar" ? "Editar Finca" : "Registrar Finca"}
+          {accion === "editar" ? "Editar Instalación" : "Registrar Instalación"}
         </Typography>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1rem' }}>
+
+
+
+          <Autocomplete
+            disablePortal
+            options={top100Films.map( ( option ) => option.label )}
+            value={formik.values.tipo}
+            onChange={( event, newValue ) => formik.setFieldValue( 'tipo', newValue )}
+            renderInput={( params ) => (
+              <TextField
+                {...params}
+                label="Tipo"
+                name="tipo"
+                error={formik.touched.tipo && Boolean( formik.errors.tipo )}
+                helperText={formik.touched.tipo && formik.errors.tipo}
+              />
+            )}
+          />
+
+          <Autocomplete
+            disablePortal
+            options={top100Films.map( ( option ) => option.label )}
+            value={formik.values.finca}
+            onChange={( event, newValue ) => formik.setFieldValue( 'finca', newValue )}
+            renderInput={( params ) => (
+              <TextField
+                {...params}
+                label="Finca"
+                name="finca"
+                error={formik.touched.finca && Boolean( formik.errors.finca )}
+                helperText={formik.touched.finca && formik.errors.finca}
+              />
+            )}
+          />
 
           <TextField
             fullWidth
@@ -67,54 +99,6 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
             onBlur={formik.handleBlur}
             error={formik.touched.nombre && Boolean( formik.errors.nombre )}
             helperText={formik.touched.nombre && formik.errors.nombre}
-          />
-
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.dimension}
-            onChange={( event, newValue ) => formik.setFieldValue( 'dimension', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Dimensión"
-                name="dimension"
-                error={formik.touched.dimension && Boolean( formik.errors.dimension )}
-                helperText={formik.touched.dimension && formik.errors.dimension}
-              />
-            )}
-          />
-
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.pais}
-            onChange={( event, newValue ) => formik.setFieldValue( 'pais', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="País"
-                name="pais"
-                error={formik.touched.pais && Boolean( formik.errors.pais )}
-                helperText={formik.touched.pais && formik.errors.pais}
-              />
-            )}
-          />
-
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.ciudad}
-            onChange={( event, newValue ) => formik.setFieldValue( 'ciudad', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Ciudad"
-                name="ciudad"
-                error={formik.touched.ciudad && Boolean( formik.errors.ciudad )}
-                helperText={formik.touched.ciudad && formik.errors.ciudad}
-              />
-            )}
           />
 
           <Autocomplete
@@ -132,6 +116,8 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
               />
             )}
           />
+
+        
         </div>
 
         <Button
@@ -145,6 +131,6 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
       </Box>
     </div>
   );
-};
+}
 
-export default CrearFinca;
+

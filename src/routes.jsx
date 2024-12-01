@@ -8,9 +8,9 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
-import Finca from "./pages/finca/Finca";
-import SignIn from "./pages/auth/sign-in";
+import {Finca} from "./pages/finca/Finca";
 import LogoutButton from "./components/LogoutButton";
+import { Instalacion } from "./pages/instalacion/Instalacion";
 
 export const routes = [
 
@@ -27,9 +27,9 @@ export const routes = [
     icon: <GiteIcon /> // Ícono de la página "About"
   },
   {
-    path: "/animales",
-    element: <Profile />,
-    label: "Animales",
+    path: "/instalacion",
+    element: <Instalacion />,
+    label: "Instalación",	
     icon: <BubbleChartIcon /> // Ícono de la página "Profile"
   },
   {

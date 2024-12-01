@@ -42,15 +42,12 @@ export function SignIn() {
       });
 
       const token = response.data;
-      console.log(token);  
       localStorage.setItem('token', token);
       
-      console.log('Login exitoso:', response.data);
       if (response.status === 200) {
         navigate('/');
       }
     } catch (error) {
-      console.log(error);
       Swal.fire( {
         title: 'Error al iniciar sesión',
         text: error.message,
