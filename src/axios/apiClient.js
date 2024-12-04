@@ -1,25 +1,24 @@
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { URL_BASE } from '../globals/constantes';
 
 // Crear una instancia de Axios
-const apiClient = axios.create({
-  baseURL: 'http://localhost:8081', // Cambia por tu URL base
+const axiosClient = axios.create({
+  baseURL: URL_BASE, // Cambia por tu URL base
 });
 
 // Interceptor para agregar automáticamente el token a cada solicitud
-apiClient.interceptors.request.use(
+axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token'); // Obtén el token de localStorage, sessionStorage o cookies
+    const token = localStorage.getItem('token');
+    console.log('Token:', token);
     if (token) {
-      config.headers.Authorization = `${token}`;
+      config.headers.Authorization = `Bearer ${token}`;
     }
+    console.log('Config:', config);
     return config;
   },
-  (error) => {
-   
-    return Promise.reject(error);
-
-  }
+  (error) => Promise.reject(error)
 );
 
-export default apiClient;
+export default axiosClient;

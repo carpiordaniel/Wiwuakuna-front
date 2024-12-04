@@ -12,35 +12,32 @@ import CrearFinca from './CrearFinca';
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import axiosClient from '../../axios/apiClient';
 
 
-const rows = [
-  { id: 1, nombre: 'Finca 1', dimension: 100, pais: 'Pais 1', ciudad: 'Ciudad 1', responsable: 'Responsable 1' },
-  { id: 2, nombre: 'Finca 2', dimension: 200, pais: 'Pais 2', ciudad: 'Ciudad 2', responsable: 'Responsable 2' },
-  { id: 3, nombre: 'Finca 3', dimension: 300, pais: 'Pais 3', ciudad: 'Ciudad 3', responsable: 'Responsable 3' },
-  { id: 4, nombre: 'Finca 4', dimension: 400, pais: 'Pais 4', ciudad: 'Ciudad 4', responsable: 'Responsable 4' },
-  { id: 5, nombre: 'Finca 5', dimension: 500, pais: 'Pais 5', ciudad: 'Ciudad 5', responsable: 'Responsable 5' },
-];
-
-const paginationModel = { page: 0, pageSize: 5 };
-
+const paginationModel = { page: 0, pageSize: 10 };
 
 export const Finca = () => {
 
   const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
+  const [ dataFinca, setDataFinca ] = useState( [] );
   const handleOpen = () => setOpen( true );
   const handleClose = () => setOpen( false );
   const [ accion, setAccion ] = useState( "" );
 
+
+
+
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
-    { field: 'dimension', headerName: 'Dimensión', flex: 1},
-    { field: 'pais', headerName: 'Pais', flex: 1},
-    { field: 'ciudad', headerName: 'Ciudad', flex: 1},
-    { field: 'responsable', headerName: 'Responsable', flex: 1},
-    { field: 'action', headerName: 'Action', flex: 1,
+    { field: 'dimension', headerName: 'Dimensión', flex: 1 },
+    { field: 'pais', headerName: 'Pais', flex: 1 },
+    { field: 'ciudad', headerName: 'Ciudad', flex: 1 },
+    { field: 'idusuario', headerName: 'Usuario', flex: 1 },
+    { field: 'instalaciones', headerName: 'Instalaciones', flex: 1 },
+    {
+      field: 'action', headerName: 'Action', flex: 1,
       renderCell: ( params ) => (
         <>
           <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
@@ -56,8 +53,9 @@ export const Finca = () => {
   }, [] );
 
   const getAllFinca = async () => {
+
     try {
-      const response = await axios.get( `${ENDPOINTS.GET_FINCA}` );
+      const response = await axiosClient.get( `${ENDPOINTS.GET_FINCA}` );
       console.log( response.data );
       setDataFinca( response.data );
     } catch ( error ) {
@@ -76,8 +74,16 @@ export const Finca = () => {
       confirmButtonText: 'Sí, eliminar',
     } ).then( ( result ) => {
       if ( result.isConfirmed ) {
-        const response = axios.delete( `${ENDPOINTS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+        const response = axiosClient.delete( `${ENDPOINTS.DELETE_FINCA}/${id}` );
+        response.then( ( data ) => {
+          Swal.fire( {
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          } );
+          data.status === 204 && getAllFinca()
+        } )
       }
     } );
 
@@ -125,7 +131,7 @@ export const Finca = () => {
 
       </Box >
       <DataGrid
-        rows={rows}
+        rows={dataFinca}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[ 5, 10 ]}
