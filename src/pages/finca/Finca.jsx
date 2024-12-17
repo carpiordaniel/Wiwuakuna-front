@@ -55,7 +55,7 @@ export const Finca = () => {
   const getAllFinca = async () => {
 
     try {
-      const response = await axiosClient.get( `${ENDPOINTS.GET_FINCA}` );
+      const response = await axiosClient.get( `${FINCAS.GET_FINCA}` );
       console.log( response.data );
       setDataFinca( response.data );
     } catch ( error ) {
@@ -74,7 +74,7 @@ export const Finca = () => {
       confirmButtonText: 'Sí, eliminar',
     } ).then( ( result ) => {
       if ( result.isConfirmed ) {
-        const response = axiosClient.delete( `${ENDPOINTS.DELETE_FINCA}/${id}` );
+        const response = axiosClient.delete( `${FINCAS.DELETE_FINCA}/${id}` );
         response.then( ( data ) => {
           Swal.fire( {
             title: '¡Completado!',

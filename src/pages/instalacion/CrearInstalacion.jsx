@@ -23,7 +23,7 @@ export const CrearInstalacion = ( { accion = "registrar", data } ) => {
     onSubmit: async ( values ) => {
       try {
         // Espera a que la solicitud axios termine
-        const response = await axios.post( `${ENDPOINTS.POST_FINCA}`, values );
+        const response = await axios.post( `${FINCAS.POST_FINCA}`, values );
 
         Swal.fire( {
           icon: response.status === 200 ? 'success' : 'error',

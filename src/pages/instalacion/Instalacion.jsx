@@ -62,7 +62,7 @@ export const Instalacion = () => {
 
   const getAllFinca = async () => {
     try {
-      const response = await axios.get( `${ENDPOINTS.GET_FINCA}` );
+      const response = await axios.get( `${FINCAS.GET_FINCA}` );
       console.log( response.data );
       setDataFinca( response.data );
     } catch ( error ) {
@@ -81,7 +81,7 @@ export const Instalacion = () => {
       confirmButtonText: 'Sí, eliminar',
     } ).then( ( result ) => {
       if ( result.isConfirmed ) {
-        const response = axios.delete( `${ENDPOINTS.DELETE_FINCA}/${id}` );
+        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
         Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
       }
     } );

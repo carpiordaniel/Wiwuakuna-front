@@ -7,7 +7,7 @@ import {
 } from "@material-tailwind/react";
 import { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { URL_BASE } from "../../globals/constantes";
+import { LOGIN } from "../../globals/constantes";
 import axios from "axios";
 import { SwipeLeftAlt } from "@mui/icons-material";
 import Swal from "sweetalert2";
@@ -34,7 +34,7 @@ export function SignIn() {
         password: password
       }
 
-      const response = await axios.post(`${URL_BASE}/auth/login`, data, {
+      const response = await axios.post(`${LOGIN.POST_LOGIN}`, data, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
