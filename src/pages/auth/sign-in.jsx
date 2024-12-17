@@ -11,6 +11,7 @@ import { LOGIN } from "../../globals/constantes";
 import axios from "axios";
 import { SwipeLeftAlt } from "@mui/icons-material";
 import Swal from "sweetalert2";
+import axiosClient from "@/axios/apiClient";
 
 
 export function SignIn() {
@@ -34,7 +35,7 @@ export function SignIn() {
         password: password
       }
 
-      const response = await axios.post(`${LOGIN.POST_LOGIN}`, data, {
+      const response = await axiosClient.post(`${LOGIN.POST_LOGIN}`, data, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',

@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
-import { COLORS } from '@/globals/constantes';
+import { COLORS, FINCAS } from '@/globals/constantes';
 
 const CrearFinca = ( { accion = "registrar", data } ) => {
   const top100Films = [

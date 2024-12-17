@@ -12,7 +12,7 @@ import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import axiosClient from '../../axios/apiClient';
-import { COLORS } from '@/globals/constantes';
+import { COLORS, FINCAS } from '@/globals/constantes';
 
 
 const paginationModel = { page: 0, pageSize: 10 };
@@ -34,8 +34,8 @@ export const Finca = () => {
     { field: 'dimension', headerName: 'Dimensión', flex: 1 },
     { field: 'pais', headerName: 'Pais', flex: 1 },
     { field: 'ciudad', headerName: 'Ciudad', flex: 1 },
-    { field: 'idusuario', headerName: 'Usuario', flex: 1 },
-    { field: 'instalaciones', headerName: 'Instalaciones', flex: 1 },
+    { field: 'responsable', headerName: 'Responsable', flex: 1 },
+    // { field: 'instalaciones', headerName: 'Instalaciones', flex: 1 },
     {
       field: 'action', headerName: 'Action', flex: 1,
       renderCell: ( params ) => (
@@ -56,7 +56,7 @@ export const Finca = () => {
 
     try {
       const response = await axiosClient.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
+      console.log( response.data ); 
       setDataFinca( response.data );
     } catch ( error ) {
       console.error( error );
