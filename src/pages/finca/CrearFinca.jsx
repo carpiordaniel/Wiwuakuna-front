@@ -1,10 +1,10 @@
 import React from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, ENDPOINTS } from './../../globals/constantes';
 import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import { COLORS } from '@/globals/constantes';
 
 const CrearFinca = ( { accion = "registrar", data } ) => {
   const top100Films = [

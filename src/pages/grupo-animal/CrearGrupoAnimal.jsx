@@ -1,7 +1,7 @@
 import React from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, ENDPOINTS } from '../../globals/constantes';
+import { COLORS } from '../../globals/constantes';
 import { crearGrupoAnimalValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';

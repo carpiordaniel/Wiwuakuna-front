@@ -5,7 +5,7 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, ENDPOINTS } from '../../globals/constantes';
+import { COLORS } from '../../globals/constantes';
 
 import {CrearRegistroAnimal} from './CrearRegistroAnimal';
 

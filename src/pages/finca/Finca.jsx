@@ -5,7 +5,6 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, ENDPOINTS } from './../../globals/constantes';
 
 import CrearFinca from './CrearFinca';
 
@@ -13,6 +12,7 @@ import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import axiosClient from '../../axios/apiClient';
+import { COLORS } from '@/globals/constantes';
 
 
 const paginationModel = { page: 0, pageSize: 10 };
