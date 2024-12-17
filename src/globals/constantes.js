@@ -2,8 +2,8 @@ export const COLORS = {
   PRIMARY: "#333333",
 };
 
-// export const URL_BASE = "http://localhost:8081";
-export const URL_BASE = "https://wiwuakuna.up.railway.app";
+export const URL_BASE = "http://localhost:8080";
+// export const URL_BASE = "https://wiwuakuna.up.railway.app";
 
 export const FINCAS= {
   GET_FINCA: `${URL_BASE}/api/fincas`,
