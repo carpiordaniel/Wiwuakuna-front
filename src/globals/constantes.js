@@ -17,3 +17,8 @@ export const FINCAS= {
 export const LOGIN = {
   POST_LOGIN: `${URL_BASE}/auth/login`,
 };
+
+export const DICCIONARIOS = {
+  GET_ALL: `${URL_BASE}/api/diccionarios`,
+  GET_BY_TABLA: (tabla) => `${URL_BASE}/api/diccionarios/${tabla}`,
+};
