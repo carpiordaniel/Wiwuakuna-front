@@ -10,7 +10,7 @@ export const FINCAS= {
   GET_FINCA_ID: `${URL_BASE}/finca/`,
   POST_FINCA: `${URL_BASE}/api/fincas`,
   PUT_FINCA: `${URL_BASE}/finca/`,
-  DELETE_FINCA: `${URL_BASE}/api/animales-fincas/fincas`,
+  DELETE_FINCA: `${URL_BASE}/api/fincas`,
 };
 
 
