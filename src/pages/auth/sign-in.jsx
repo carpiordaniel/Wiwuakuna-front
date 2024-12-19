@@ -30,7 +30,7 @@ export function SignIn() {
   const handleLogin = async () => {
 
     try {
-      const data = {
+     const data = {
         username: username,
         password: password
       }

@@ -1,73 +1,72 @@
-import React, { useState, useRef, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import Paper from '@mui/material/Paper';
-import { border, Grid } from '@mui/system';
-import { Box, Button, Container, Modal, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
-import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
-
-import {CrearLote} from './CrearLote';
-
-import "./../../style.css"
+import { Paper, Box, Button, Modal, Typography, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Swal from 'sweetalert2';
-import axios from 'axios';
-
-
-const rows = [
-  { id: 1, nombre: 'Lote 1', tipoGanado: 'Tipo Ganado 1' },
-  { id: 2, nombre: 'Lote 2', tipoGanado: 'Tipo Ganado 2' },
-  { id: 3, nombre: 'Lote 3', tipoGanado: 'Tipo Ganado 3' },
-  { id: 4, nombre: 'Lote 4', tipoGanado: 'Tipo Ganado 4' },
-  { id: 5, nombre: 'Lote 5', tipoGanado: 'Tipo Ganado 5' },
-];
-
-const paginationModel = { page: 0, pageSize: 5 };
-
+import axiosClient from '../../axios/apiClient';
+import { FINCAS, COLORS } from '../../globals/constantes';
+import { CrearLote } from './CrearLote';
 
 export const RegistroLote = () => {
+  const [open, setOpen] = useState(false);
+  const [lotes, setLotes] = useState([]);
+  const [fincas, setFincas] = useState([]);
+  const [fincaSeleccionada, setFincaSeleccionada] = useState('');
+  const [accion, setAccion] = useState('');
 
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
   const columns = [
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'tipoGanado', headerName: 'Tipo Ganado', flex: 1 },
+    { field: 'cantidadAnimales', headerName: 'Cantidad de Animales', flex: 1 },
     {
       field: 'action',
-      headerName: 'Action',
+      headerName: 'Acción',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <Button color="primary" onClick={() => handleOpenModal('editar', params.row)}>
+            Editar
+          </Button>
+          <Button color="error" onClick={() => handleEliminar(params.row.id)}>
+            Eliminar
+          </Button>
         </>
-
-
       ),
-    }
+    },
   ];
 
+  useEffect(() => {
+    cargarFincas();
+  }, []);
 
-  useEffect( () => {
-    getAllFinca();
-  }, [] );
+  useEffect(() => {
+    if (fincaSeleccionada) {
+      cargarLotes();
+    }
+  }, [fincaSeleccionada]);
 
-  const getAllFinca = async () => {
+  const cargarFincas = async () => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axiosClient.get(FINCAS.GET_ALL);
+      setFincas(response.data);
+    } catch (error) {
+      console.error('Error al cargar fincas:', error);
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const cargarLotes = async () => {
+    try {
+      const response = await axiosClient.get(`/api/lotes/finca/${fincaSeleccionada}`);
+      setLotes(response.data);
+    } catch (error) {
+      console.error('Error al cargar lotes:', error);
+    }
+  };
+
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -75,66 +74,73 @@ export const RegistroLote = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        axiosClient.delete(`/api/lotes/${id}`).then(() => {
+          Swal.fire('Eliminado!', 'El registro ha sido eliminado.', 'success');
+          cargarLotes();
+        });
       }
-    } );
+    });
+  };
 
-
-  }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
-      handleOpen();
-    }
-  }
-
+  const handleOpenModal = (dato) => {
+    setAccion(dato);
+    handleOpen();
+  };
 
   return (
     <Paper sx={{ width: '100%' }}>
-      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de lote</Typography>
+      <Typography variant="h6" sx={{ margin: '10px' }}>
+        Administración de Lotes
+      </Typography>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar lote</Button>
+      <Box sx={{ display: 'flex', gap: 2, margin: '10px' }}>
+        <FormControl fullWidth>
+          <InputLabel id="finca-select-label">Finca</InputLabel>
+          <Select
+            labelId="finca-select-label"
+            value={fincaSeleccionada}
+            onChange={(e) => setFincaSeleccionada(e.target.value)}
+          >
+            {fincas.map((finca) => (
+              <MenuItem key={finca.id} value={finca.id}>
+                {finca.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </Box>
 
-      <Box sx={{ margin: "10px", width: '100%' }}>
+      <Button
+        variant="contained"
+        sx={{
+          margin: '10px',
+          cursor: 'pointer',
+          borderRadius: '10px',
+          color: 'white',
+          backgroundColor: COLORS.PRIMARY,
+        }}
+        onClick={() => handleOpenModal('crear')}
+      >
+        Agregar Lote
+      </Button>
 
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: "calc(100% - 100px)",
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            borderRadius: '10px',
-            p: 4
-          }}>
+      <Box sx={{ margin: '10px', width: '100%' }}>
+        <Modal open={open} onClose={handleClose}>
+          <Box sx={{ padding: 4 }}>
             <CrearLote accion={accion} />
           </Box>
         </Modal>
+      </Box>
 
-      </Box >
       <DataGrid
-        rows={rows}
+        rows={lotes}
         columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />
-    </Paper >
+    </Paper>
   );
-}
-
-
+};
