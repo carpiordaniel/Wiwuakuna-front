@@ -1,30 +1,38 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
 import Swal from 'sweetalert2';
 import { COLORS, FINCAS } from '@/globals/constantes';
 import axiosClient from '../../axios/apiClient';
+import Catalogos from '../catalogos/Catalogos';
 
 const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
-
   const formik = useFormik( {
     initialValues: {
+      id: data?.id || null,
       nombre: data?.nombre || '',
       dimension: data?.dimension || '',
       pais: data?.pais || '',
       ciudad: data?.ciudad || '',
-      // responsable: data?.responsable || localStorage.getItem('USUARIO'),
+      responsable: data?.responsable || '',	
     },
     validationSchema: crearFincaValidationSchema,
     onSubmit: async ( values ) => {
+      let newValues = values
+      if (accion == "registrar") {
+        console.log("registrar")	
+        const { nombre, dimension, pais, ciudad, responsable} = values; 
+        newValues = { nombre, dimension, pais, ciudad}
+      }
       try {
-        const response = await axiosClient.post( `${FINCAS.POST_FINCA}`, values );
+        const response = accion === "registrar" 
+                          ? await axiosClient.post( `${FINCAS.POST_FINCA}`, newValues )
+                          : await axiosClient.put( `${FINCAS.PUT_FINCA}${data.id}`, values );
 
         Swal.fire( {
           icon: response.status === 200 ? 'success' : 'error',
-          title: response.status === 200 ? 'Finca creada correctamente' : 'Error al crear la finca',
+          title: response.status === 200 ? `${accion === "registrar" ? 'Finca creada correctamente' : 'Finca actualizada correctamente'}` :  `${accion === "registrar" ? 'Error al crear la finca' : 'Error al actualizar la finca'}`,
           showConfirmButton: false,
           timer: 2000,
         } );
@@ -43,7 +51,6 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
     },
   } );
 
-
   return (
     <div>
       <Box
@@ -51,8 +58,8 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
         onSubmit={formik.handleSubmit}
         sx={{ margin: '40px 10px', }}
       >
-        {JSON.stringify( formik.values )}
-        {JSON.stringify( formik.errors )}
+        {/* {JSON.stringify( formik.values )}
+        {JSON.stringify( formik.errors )} */}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar Finca" : "Registrar Finca"}
         </Typography>
@@ -103,11 +110,11 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
           />
 
           <TextField
-            disabled
+            disabled = {accion === "registrar" ? true : false}
             fullWidth
             label="Responsable"
             name="responsable"
-            value={localStorage.getItem('USUARIO') ?? 'SIN RESPONSABLE'}
+            value={formik.values.responsable}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.responsable && Boolean( formik.errors.responsable )}

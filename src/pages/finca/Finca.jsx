@@ -24,7 +24,7 @@ export const Finca = () => {
   const handleOpen = () => setOpen( true );
   const handleClose = () => setOpen( false );
   const [ accion, setAccion ] = useState( "" );
-
+  const dataRef = useRef( null );
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
@@ -37,7 +37,7 @@ export const Finca = () => {
       field: 'action', headerName: 'Action', flex: 1,
       renderCell: ( params ) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar", params.row )} />
           <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
         </>
       ),
@@ -50,7 +50,6 @@ export const Finca = () => {
   }, [] );
 
   const getAllFinca = async () => {
-
     try {
       const response = await axiosClient.get( `${FINCAS.GET_FINCA}` );
       console.log( response.data ); 
@@ -86,9 +85,10 @@ export const Finca = () => {
 
 
   }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+  const handleOpenModal = ( accion, data ) => {
+    setAccion( accion );
+    if ( data != "" ) {
+      dataRef.current = data;
       handleOpen();
     }
   }
@@ -101,7 +101,7 @@ export const Finca = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar Finca</Button>
+      }} onClick={() => handleOpenModal( "registrar", {} )}>Agregar Finca</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -122,7 +122,7 @@ export const Finca = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearFinca accion={accion} getAllFinca={getAllFinca} />
+            <CrearFinca accion={accion} data={accion === "editar" ? dataRef.current: {}} getAllFinca={getAllFinca} />
           </Box>
         </Modal>
 
