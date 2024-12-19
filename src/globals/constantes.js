@@ -23,6 +23,18 @@ export const DICCIONARIOS = {
   GET_BY_TABLA: (tabla) => `${URL_BASE}/api/diccionarios/${tabla}`,
 };
 
+export const ASIGNACIONES = {
+  GET_ALL_ASIGNACIONES: `${URL_BASE}/api/asignaciones`,
+  POST_ASIGNACIONES: `${URL_BASE}/api/asignaciones`,
+  PUT_ASIGNACIONES: `${URL_BASE}/api/asignaciones/`,
+  DELETE_ASIGNACIONES: `${URL_BASE}/api/asignaciones`,
+};
+
+export const USUARIOS = {
+  GET_ALL_USUARIOS: `${URL_BASE}/api/usuarios`,
+};
+
+
 export const INSTALACIONES = {
   GET_ALL: `${URL_BASE}/api/instalaciones`,
   GET_BY_ID: (id) => `${URL_BASE}/api/instalaciones/${id}`,

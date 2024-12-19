@@ -25,6 +25,10 @@ import InventoryIcon from '@mui/icons-material/Inventory';
 import MotionPhotosAutoIcon from '@mui/icons-material/MotionPhotosAuto';
 import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import EngineeringIcon from '@mui/icons-material/Engineering';
+import { Asignaciones } from "./pages/asignaciones/Asignaciones";
+import JoinInnerIcon from '@mui/icons-material/JoinInner';
+
+
 
 export const routes = [
 
@@ -87,6 +91,12 @@ export const routes = [
     element: <RegistroResponsable />,
     label: "Responsable",
     icon: <EngineeringIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/asignaciones",
+    element: <Asignaciones />,
+    label: "Asignaciones",
+    icon: <JoinInnerIcon /> // Ícono de la página "Profile"
   },
   {
     path: "/logout",

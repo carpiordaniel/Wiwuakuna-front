@@ -15,7 +15,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
       dimension: data?.dimension || '',
       pais: data?.pais || '',
       ciudad: data?.ciudad || '',
-      responsable: data?.responsable || '',	
+      responsable: data?.responsable || localStorage.getItem( 'USUARIO' ) || 'SIN RESPONSABLE',	
     },
     validationSchema: crearFincaValidationSchema,
     onSubmit: async ( values ) => {
@@ -23,7 +23,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
       if (accion == "registrar") {
         console.log("registrar")	
         const { nombre, dimension, pais, ciudad, responsable} = values; 
-        newValues = { nombre, dimension, pais, ciudad}
+        newValues = { nombre, dimension, pais, ciudad, responsable}
       }
       try {
         const response = accion === "registrar" 
