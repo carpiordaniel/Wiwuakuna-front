@@ -10,8 +10,10 @@ export const RegistroAnimal = () => {
   const [animales, setAnimales] = useState([]);
   const [fincas, setFincas] = useState([]);
   const [instalaciones, setInstalaciones] = useState([]);
+  const [lotes, setLotes] = useState([]);
   const [fincaSeleccionada, setFincaSeleccionada] = useState('');
   const [instalacionSeleccionada, setInstalacionSeleccionada] = useState('');
+  const [loteSeleccionado, setLoteSeleccionado] = useState('');
   const [usuario, setUsuario] = useState(localStorage.getItem('USUARIO') || '');
 
   const handleOpen = () => setOpen(true);
@@ -34,9 +36,10 @@ export const RegistroAnimal = () => {
   useEffect(() => {
     if (fincaSeleccionada) {
       cargarInstalaciones();
+      cargarLotes();
       cargarAnimales();
     }
-  }, [fincaSeleccionada, instalacionSeleccionada]);
+  }, [fincaSeleccionada, instalacionSeleccionada, loteSeleccionado]);
 
   const cargarFincas = async () => {
     try {
@@ -56,12 +59,22 @@ export const RegistroAnimal = () => {
     }
   };
 
+  const cargarLotes = async () => {
+    try {
+      const response = await axiosClient.get(`/api/lotes/finca/${fincaSeleccionada}`);
+      setLotes(response.data);
+    } catch (error) {
+      console.error('Error al cargar lotes:', error);
+    }
+  };
+
   const cargarAnimales = async () => {
     try {
       const params = { finca: fincaSeleccionada };
       if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
+      if (loteSeleccionado) params.lote = loteSeleccionado;
 
-      const response = await axiosClient.get('/api/animales', { params });
+      const response = await axiosClient.get('/api/filter-animales', { params });
       setAnimales(response.data);
     } catch (error) {
       console.error('Error al cargar animales:', error);
@@ -104,7 +117,36 @@ export const RegistroAnimal = () => {
             ))}
           </Select>
         </FormControl>
+
+        <FormControl fullWidth>
+          <InputLabel id="lote-select-label">Lote</InputLabel>
+          <Select
+            labelId="lote-select-label"
+            value={loteSeleccionado}
+            onChange={(e) => setLoteSeleccionado(e.target.value)}
+          >
+            {lotes.map((lote) => (
+              <MenuItem key={lote.id} value={lote.id}>
+                {lote.nombre}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
       </Box>
+
+      <Button
+        variant="contained"
+        sx={{
+          margin: '10px',
+          cursor: 'pointer',
+          borderRadius: '10px',
+          color: 'white',
+          backgroundColor: COLORS.PRIMARY,
+        }}
+        onClick={handleOpen}
+      >
+        Agregar Animal
+      </Button>
 
       <DataGrid
         rows={animales}
