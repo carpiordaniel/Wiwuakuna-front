@@ -11,7 +11,7 @@ export const FINCAS = {
   POST_FINCA: `${URL_BASE}/api/fincas`,
   PUT_FINCA: `${URL_BASE}/api/fincas/`,
   DELETE_FINCA: `${URL_BASE}/api/fincas`,
-  GET_BY_RESPONSABLE: (responsable) => `${URL_BASE}/api/fincas?responsable=${responsable}`,
+  GET_BY_RESPONSABLE: (responsable) => `${URL_BASE}/api/asignaciones/fincas?responsable=${responsable}`, // Actualización aquí
 };
 
 export const LOGIN = {
