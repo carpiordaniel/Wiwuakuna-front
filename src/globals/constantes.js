@@ -59,3 +59,11 @@ export const ANIMALES = {
   PUT: (id) => `${URL_BASE}/api/animales/${id}`,
   DELETE: (id) => `${URL_BASE}/api/animales/${id}`,
 };
+export const LOTES = {
+  GET_ALL: `${URL_BASE}/api/lotes`,
+  GET_BY_ID: (id) => `${URL_BASE}/api/lotes/${id}`,
+  POST: `${URL_BASE}/api/lotes`,
+  PUT: (id) => `${URL_BASE}/api/lotes/${id}`,
+  DELETE: (id) => `${URL_BASE}/api/lotes/${id}`,
+  GET_BY_FINCA: (fincaId) => `${URL_BASE}/api/lotes/finca/${fincaId}`,
+};
