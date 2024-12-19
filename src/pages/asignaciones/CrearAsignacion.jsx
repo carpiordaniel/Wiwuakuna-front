@@ -77,10 +77,6 @@ export const CrearAsignacion = ( { accion = "registrar", data, getAllAsignacione
     }
   }
 
- 
-  
-
-
   return (
     <div>
       <Box
