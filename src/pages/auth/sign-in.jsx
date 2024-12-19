@@ -17,15 +17,15 @@ import axiosClient from "@/axios/apiClient";
 export function SignIn() {
 
 
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [ username, setUsername ] = useState( '' );
+  const [ password, setPassword ] = useState( '' );
   const navigate = useNavigate();
 
-  useEffect(() => {
-    if (localStorage.getItem('token')) {
-      navigate('/'); // Redirige al usuario si ya está autenticado
+  useEffect( () => {
+    if ( localStorage.getItem( 'token' ) ) {
+      navigate( '/' ); // Redirige al usuario si ya está autenticado
     }
-  }, [navigate]); 
+  }, [ navigate ] );
 
   const handleLogin = async () => {
 
@@ -35,28 +35,51 @@ export function SignIn() {
         password: password
       }
 
-      const response = await axiosClient.post(`${LOGIN.POST_LOGIN}`, data, {
+      const response = await axiosClient.post( `${LOGIN.POST_LOGIN}`, data, {
         withCredentials: true,
         headers: {
           'Content-Type': 'application/json',
         },
-      });
+      } );
 
       const token = response.data;
-      localStorage.setItem('token', token);
-      
-      if (response.status === 200) {
-        navigate('/');
+      localStorage.setItem( 'token', token );
+
+
+      const decodeJWT = ( token ) => {
+        try {
+          const [ , payload ] = token.split( '.' );
+          const decodedPayload = JSON.parse( atob( payload.replace( /-/g, '+' ).replace( /_/g, '/' ) ) );
+          console.log( "Payload decodificado:", decodedPayload );
+          return decodedPayload;
+        } catch ( error ) {
+          console.error( "Error al decodificar el token:", error );
+          return null;
+        }
+      };
+
+
+      if ( response.status === 200 ) {
+
+        const payload = decodeJWT( token );
+        if ( payload ) {
+          console.log( "Usuario:", payload.sub );
+          console.log( "Expiración:", payload.exp );
+          localStorage.setItem( 'USUARIO', payload.sub );
+
+        }
+
+        navigate( '/' );
       }
-    } catch (error) {
+    } catch ( error ) {
       Swal.fire( {
         title: 'Error al iniciar sesión',
         text: error.message,
         icon: 'warning',
         confirmButtonText: 'Aceptar',
-        confirmButtonColor: '#3085d6',  
+        confirmButtonColor: '#3085d6',
       } )
-  
+
     }
   };
 
@@ -73,7 +96,7 @@ export function SignIn() {
               Email
             </Typography>
             <Input
-              onChange={(e) => setUsername(e.target.value)}
+              onChange={( e ) => setUsername( e.target.value )}
               size="lg"
               placeholder="name@mail.com"
               className=" !border-t-blue-gray-200 focus:!border-t-gray-900"
@@ -85,7 +108,7 @@ export function SignIn() {
               Password
             </Typography>
             <Input
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={( e ) => setPassword( e.target.value )}
               type="password"
               size="lg"
               placeholder="********"
@@ -95,12 +118,12 @@ export function SignIn() {
               }}
             />
           </div>
-        
+
           <Button className="mt-6" fullWidth onClick={handleLogin}>
             Sign In
           </Button>
 
-         
+
           <Typography variant="paragraph" className="text-center text-blue-gray-500 font-medium mt-4">
             Not registered?
             <Link to="/auth/sign-up" className="text-gray-900 ml-1">Create account</Link>

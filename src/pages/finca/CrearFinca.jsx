@@ -45,32 +45,6 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
     },
   } );
 
-  const decodeJWT = (token) => {
-    try {
-      const [, payload] = token.split('.');
-      const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
-      console.log("Payload decodificado:", decodedPayload);
-      return decodedPayload;
-    } catch (error) {
-      console.error("Error al decodificar el token:", error);
-      return null;
-    }
-  };
-  
-  useEffect(() => {
-    // Ejemplo de uso
-  const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJEQ0FSUElPIiwiaWF0IjoxNzM0NTc1ODAwLCJleHAiOjE3MzQ2NjIyMDB9.upuqx5bhYNXQTVKZrPu9arGkCY5UoU5NRgZ-G342qSW4N5ide-sze23BIlIIsj9onFQJqTJda5XUCytq7oTiRA"; // Reemplaza con tu token
-  const payload = decodeJWT(token);
-  // Verifica los datos decodificados
-  if (payload) {
-    console.log("Usuario:", payload.user);
-    console.log("Expiración:", payload.exp);
-  }
-  }, []);
-  
-  
-
-  
 
   return (
     <div>
