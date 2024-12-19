@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
 import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
@@ -7,14 +7,14 @@ import Swal from 'sweetalert2';
 import { COLORS, FINCAS } from '@/globals/constantes';
 
 const CrearFinca = ( { accion = "registrar", data } ) => {
+
+  console.log("d")
   const top100Films = [
     { label: 'The Shawshank Redemption', year: 1994 },
     { label: 'The Godfather', year: 1972 },
   ];
-
   const formik = useFormik( {
     initialValues: {
-      codigo: data?.codigo || '',
       nombre: data?.nombre || '',
       dimension: data?.dimension || '',
       pais: data?.pais || '',
@@ -45,6 +45,32 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
     },
   } );
 
+  const decodeJWT = (token) => {
+    try {
+      const [, payload] = token.split('.');
+      const decodedPayload = JSON.parse(atob(payload.replace(/-/g, '+').replace(/_/g, '/')));
+      console.log("Payload decodificado:", decodedPayload);
+      return decodedPayload;
+    } catch (error) {
+      console.error("Error al decodificar el token:", error);
+      return null;
+    }
+  };
+  
+  useEffect(() => {
+    // Ejemplo de uso
+  const token = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJEQ0FSUElPIiwiaWF0IjoxNzM0NTc1ODAwLCJleHAiOjE3MzQ2NjIyMDB9.upuqx5bhYNXQTVKZrPu9arGkCY5UoU5NRgZ-G342qSW4N5ide-sze23BIlIIsj9onFQJqTJda5XUCytq7oTiRA"; // Reemplaza con tu token
+  const payload = decodeJWT(token);
+  // Verifica los datos decodificados
+  if (payload) {
+    console.log("Usuario:", payload.user);
+    console.log("Expiración:", payload.exp);
+  }
+  }, []);
+  
+  
+
+  
 
   return (
     <div>
@@ -69,69 +95,50 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
             helperText={formik.touched.nombre && formik.errors.nombre}
           />
 
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
+          <TextField
+            fullWidth
+            label="Dimensión"
+            name="dimension"
             value={formik.values.dimension}
-            onChange={( event, newValue ) => formik.setFieldValue( 'dimension', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Dimensión"
-                name="dimension"
-                error={formik.touched.dimension && Boolean( formik.errors.dimension )}
-                helperText={formik.touched.dimension && formik.errors.dimension}
-              />
-            )}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.dimension && Boolean( formik.errors.dimension )}
+            helperText={formik.touched.dimension && formik.errors.dimension}
           />
 
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
+          <TextField
+            fullWidth
+            label="Pais"
+            name="pais"
             value={formik.values.pais}
-            onChange={( event, newValue ) => formik.setFieldValue( 'pais', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="País"
-                name="pais"
-                error={formik.touched.pais && Boolean( formik.errors.pais )}
-                helperText={formik.touched.pais && formik.errors.pais}
-              />
-            )}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.pais && Boolean( formik.errors.pais )}
+            helperText={formik.touched.pais && formik.errors.pais}
           />
 
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
+          <TextField
+            fullWidth
+            label="Ciudad"
+            name="ciudad"
             value={formik.values.ciudad}
-            onChange={( event, newValue ) => formik.setFieldValue( 'ciudad', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Ciudad"
-                name="ciudad"
-                error={formik.touched.ciudad && Boolean( formik.errors.ciudad )}
-                helperText={formik.touched.ciudad && formik.errors.ciudad}
-              />
-            )}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.ciudad && Boolean( formik.errors.ciudad )}
+            helperText={formik.touched.ciudad && formik.errors.ciudad}
           />
 
-          <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
+          <TextField
+            fullWidth
+            label="Responsable"
+            name="responsable"
             value={formik.values.responsable}
-            onChange={( event, newValue ) => formik.setFieldValue( 'responsable', newValue )}
-            renderInput={( params ) => (
-              <TextField
-                {...params}
-                label="Responsable"
-                name="responsable"
-                error={formik.touched.responsable && Boolean( formik.errors.responsable )}
-                helperText={formik.touched.responsable && formik.errors.responsable}
-              />
-            )}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+            error={formik.touched.responsable && Boolean( formik.errors.responsable )}
+            helperText={formik.touched.responsable && formik.errors.responsable}
           />
+
         </div>
 
         <Button

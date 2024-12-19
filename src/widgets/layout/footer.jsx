@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { Typography } from "@material-tailwind/react";
 import { HeartIcon } from "@heroicons/react/24/solid";
 
-export function Footer({ brandName, brandLink, routes }) {
+export function Footer( { brandName, brandLink, routes } ) {
   const year = new Date().getFullYear();
 
   return (
@@ -21,7 +21,7 @@ export function Footer({ brandName, brandLink, routes }) {
           for a better web.
         </Typography>
         <ul className="flex items-center gap-4">
-          {routes.map(({ name, path }) => (
+          {routes.map( ( { name, path } ) => (
             <li key={name}>
               <Typography
                 as="a"
@@ -33,7 +33,7 @@ export function Footer({ brandName, brandLink, routes }) {
                 {name}
               </Typography>
             </li>
-          ))}
+          ) )}
         </ul>
       </div>
     </footer>
@@ -54,7 +54,7 @@ Footer.defaultProps = {
 Footer.propTypes = {
   brandName: PropTypes.string,
   brandLink: PropTypes.string,
-  routes: PropTypes.arrayOf(PropTypes.object),
+  routes: PropTypes.arrayOf( PropTypes.object ),
 };
 
 Footer.displayName = "/src/widgets/layout/footer.jsx";
