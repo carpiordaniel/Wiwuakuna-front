@@ -25,9 +25,6 @@ export const Finca = () => {
   const handleClose = () => setOpen( false );
   const [ accion, setAccion ] = useState( "" );
 
-
-
-
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
@@ -125,7 +122,7 @@ export const Finca = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearFinca accion={accion} />
+            <CrearFinca accion={accion} getAllFinca={getAllFinca} />
           </Box>
         </Modal>
 

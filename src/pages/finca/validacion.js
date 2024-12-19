@@ -7,6 +7,6 @@ export const crearFincaValidationSchema = Yup.object({
   dimension: Yup.string().required('La dimensión es obligatoria'),
   pais: Yup.string().required('El país es obligatorio'),
   ciudad: Yup.string().required('La ciudad es obligatoria'),
-  responsable: Yup.string().required('El responsable es obligatorio'),
+  // responsable: Yup.string().required('El responsable es obligatorio'),
 });
 

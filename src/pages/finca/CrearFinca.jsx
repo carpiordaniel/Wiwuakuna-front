@@ -5,27 +5,22 @@ import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import { COLORS, FINCAS } from '@/globals/constantes';
+import axiosClient from '../../axios/apiClient';
 
-const CrearFinca = ( { accion = "registrar", data } ) => {
+const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
 
-  console.log("d")
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-  ];
   const formik = useFormik( {
     initialValues: {
       nombre: data?.nombre || '',
       dimension: data?.dimension || '',
       pais: data?.pais || '',
       ciudad: data?.ciudad || '',
-      responsable: data?.responsable || '',
+      // responsable: data?.responsable || localStorage.getItem('USUARIO'),
     },
     validationSchema: crearFincaValidationSchema,
     onSubmit: async ( values ) => {
       try {
-        // Espera a que la solicitud axios termine
-        const response = await axios.post( `${FINCAS.POST_FINCA}`, values );
+        const response = await axiosClient.post( `${FINCAS.POST_FINCA}`, values );
 
         Swal.fire( {
           icon: response.status === 200 ? 'success' : 'error',
@@ -34,13 +29,16 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
           timer: 2000,
         } );
       } catch ( error ) {
-        console.error( 'Error al enviar el formulario:', error );
         Swal.fire( {
           icon: 'error',
-          title: 'Hubo un error al procesar la solicitud',
+          title: 'Error:',
+          text: error.response.data.message ,
           showConfirmButton: false,
-          timer: 2000,
+          timer: 3000,
         } );
+      }finally {
+        formik.resetForm();
+        getAllFinca();
       }
     },
   } );
@@ -53,6 +51,8 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
         onSubmit={formik.handleSubmit}
         sx={{ margin: '40px 10px', }}
       >
+        {JSON.stringify( formik.values )}
+        {JSON.stringify( formik.errors )}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar Finca" : "Registrar Finca"}
         </Typography>
@@ -103,10 +103,11 @@ const CrearFinca = ( { accion = "registrar", data } ) => {
           />
 
           <TextField
+            disabled
             fullWidth
             label="Responsable"
             name="responsable"
-            value={formik.values.responsable}
+            value={localStorage.getItem('USUARIO') ?? 'SIN RESPONSABLE'}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             error={formik.touched.responsable && Boolean( formik.errors.responsable )}
