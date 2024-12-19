@@ -22,3 +22,14 @@ export const DICCIONARIOS = {
   GET_ALL: `${URL_BASE}/api/diccionarios`,
   GET_BY_TABLA: (tabla) => `${URL_BASE}/api/diccionarios/${tabla}`,
 };
+export const INSTALACIONES = {
+  GET_ALL: `${URL_BASE}/api/instalaciones`,
+  GET_BY_ID: (id) => `${URL_BASE}/api/instalaciones/${id}`,
+  POST: `${URL_BASE}/api/instalaciones`,
+  PUT: (id) => `${URL_BASE}/api/instalaciones/${id}`,
+  DELETE: (id) => `${URL_BASE}/api/instalaciones/${id}`,
+  GET_BY_FILTER: (responsable, finca) =>
+    `${URL_BASE}/api/instalaciones/filtro?responsable=${responsable}${
+      finca ? `&finca=${finca}` : ""
+    }`,
+};
