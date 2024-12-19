@@ -5,30 +5,20 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
+import { COLORS, INSTALACIONES }  from '../../globals/constantes';
 
 import {CrearInstalacion} from './CrearInstalacion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
-import axios from 'axios';
-
-
-const rows = [
-  { id: 1, tipo: 'Tipo 1', finca: 'Finca 1', nombre: 'Instalacion 1', responsable: 'Responsable 1' },
-  { id: 2, tipo: 'Tipo 2', finca: 'Finca 2', nombre: 'Instalacion 2', responsable: 'Responsable 2' },
-  { id: 3, tipo: 'Tipo 3', finca: 'Finca 3', nombre: 'Instalacion 3', responsable: 'Responsable 3' },
-  { id: 4, tipo: 'Tipo 4', finca: 'Finca 4', nombre: 'Instalacion 4', responsable: 'Responsable 4' },
-  { id: 5, tipo: 'Tipo 5', finca: 'Finca 5', nombre: 'Instalacion 5', responsable: 'Responsable 5' },
-];
-
-const paginationModel = { page: 0, pageSize: 5 };
+import axiosClient from '@/axios/apiClient';
 
 
 export const Instalacion = () => {
-
+  
+  const paginationModel = { page: 0, pageSize: 5 };
   const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
+  const [ dataInstalacion, setDataInstalacion ] = useState([]);
   const handleOpen = () => setOpen( true );
   const handleClose = () => setOpen( false );
   const [ accion, setAccion ] = useState( "" );
@@ -57,14 +47,14 @@ export const Instalacion = () => {
 
 
   useEffect( () => {
-    getAllFinca();
+    getAllInstalaciones();
   }, [] );
 
-  const getAllFinca = async () => {
+  const getAllInstalaciones = async () => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
+      const response = await axiosClient.get( `${INSTALACIONES.GET_ALL}` );
       console.log( response.data );
-      setDataFinca( response.data );
+      setDataInstalacion( response.data );
     } catch ( error ) {
       console.error( error );
     }
@@ -81,13 +71,21 @@ export const Instalacion = () => {
       confirmButtonText: 'Sí, eliminar',
     } ).then( ( result ) => {
       if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+        const response = axiosClient.delete( `${INSTALACIONES.DELETE}${id}` );
+        response.then( ( data ) => {
+          Swal.fire( {
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          } );
+          data.status === 204 && getAllAsignaciones()
+        } )
       }
     } );
-
-
   }
+  
+
   const handleOpenModal = ( dato ) => {
     setAccion( dato );
     if ( dato != "" ) {
@@ -130,7 +128,7 @@ export const Instalacion = () => {
 
       </Box >
       <DataGrid
-        rows={rows}
+        rows={dataInstalacion}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[ 5, 10 ]}
