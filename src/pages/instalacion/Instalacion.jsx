@@ -5,9 +5,9 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, INSTALACIONES }  from '../../globals/constantes';
+import { COLORS, INSTALACIONES } from '../../globals/constantes';
 
-import {CrearInstalacion} from './CrearInstalacion';
+import { CrearInstalacion } from './CrearInstalacion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
@@ -15,13 +15,14 @@ import axiosClient from '@/axios/apiClient';
 
 
 export const Instalacion = () => {
-  
+
   const paginationModel = { page: 0, pageSize: 5 };
-  const [ open, setOpen ] = useState( false );
-  const [ dataInstalacion, setDataInstalacion ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const [open, setOpen] = useState(false);
+  const [dataInstalacion, setDataInstalacion] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
 
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
@@ -29,15 +30,15 @@ export const Instalacion = () => {
     { field: 'finca', headerName: 'Finca', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'responsable', headerName: 'Responsable', flex: 1 },
-    
+
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
 
 
@@ -46,22 +47,20 @@ export const Instalacion = () => {
   ];
 
 
-  useEffect( () => {
+  useEffect(() => {
     getAllInstalaciones();
-  }, [] );
+  }, []);
 
   const getAllInstalaciones = async () => {
     try {
-      const response = await axiosClient.get( `${INSTALACIONES.GET_ALL}` );
-      console.log( response.data );
-      setDataInstalacion( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axiosClient.get(`${INSTALACIONES.GET_ALL}`);
+      setDataInstalacion(response.data);
+    } catch (error) {
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -69,26 +68,27 @@ export const Instalacion = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axiosClient.delete( `${INSTALACIONES.DELETE}${id}` );
-        response.then( ( data ) => {
-          Swal.fire( {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axiosClient.delete(`${INSTALACIONES.DELETE}/${id}`);
+        response.then((data) => {
+          Swal.fire({
             title: '¡Completado!',
             text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
             icon: data.status === 204 ? 'success' : 'error',
             confirmButtonColor: '#3085d6',
-          } );
-          data.status === 204 && getAllAsignaciones()
-        } )
+          });
+          data.status === 204 && getAllInstalaciones()
+        })
       }
-    } );
+    });
   }
-  
 
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
       handleOpen();
     }
   }
@@ -101,7 +101,7 @@ export const Instalacion = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar Instalacion</Button>
+      }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -122,7 +122,7 @@ export const Instalacion = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearInstalacion accion={accion} />
+            <CrearInstalacion accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllInstalaciones={getAllInstalaciones} />
           </Box>
         </Modal>
 
@@ -131,7 +131,7 @@ export const Instalacion = () => {
         rows={dataInstalacion}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />

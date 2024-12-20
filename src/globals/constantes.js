@@ -36,11 +36,11 @@ export const USUARIOS = {
 
 
 export const INSTALACIONES = {
-  GET_ALL: `${URL_BASE}/api/instalaciones/`,
-  GET_BY_ID: `${URL_BASE}/api/instalaciones/`,
-  POST: `${URL_BASE}/api/instalaciones/`,
-  PUT: `${URL_BASE}/api/instalaciones/`,
-  DELETE: `${URL_BASE}/api/instalaciones/`,
+  GET_ALL: `${URL_BASE}/api/instalaciones`,
+  GET_BY_ID: `${URL_BASE}/api/instalaciones`,
+  POST: `${URL_BASE}/api/instalaciones`,
+  PUT: `${URL_BASE}/api/instalaciones`,
+  DELETE: `${URL_BASE}/api/instalaciones`,
   GET_BY_FILTER: (responsable, finca) =>
     `${URL_BASE}/api/instalaciones/filtro?responsable=${responsable}${
       finca ? `&finca=${finca}` : ""

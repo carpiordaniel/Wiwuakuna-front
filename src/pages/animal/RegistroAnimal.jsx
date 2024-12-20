@@ -48,7 +48,7 @@ export const RegistroAnimal = () => {
     } catch (error) {
       console.error('Error al cargar fincas:', error);
     }
-  };
+  }
 
   const cargarInstalaciones = async () => {
     try {
