@@ -5,71 +5,62 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
+import { COLORS, FINCAS, GRUPO_ANIMAL } from '../../globals/constantes';
 
-import {CrearGrupoAnimal} from './CrearGrupoAnimal';
+import { CrearGrupoAnimal } from './CrearGrupoAnimal';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import axiosClient from '@/axios/apiClient';
 
-
-const rows = [
-  { id: 1, codigo: 'Codigo 1', tipoAnimal: 'Tipo Animal 1', instalacion: 'Instalacion 1' },
-  { id: 2, codigo: 'Codigo 2', tipoAnimal: 'Tipo Animal 2', instalacion: 'Instalacion 2' },
-  { id: 3, codigo: 'Codigo 3', tipoAnimal: 'Tipo Animal 3', instalacion: 'Instalacion 3' },
-  { id: 4, codigo: 'Codigo 4', tipoAnimal: 'Tipo Animal 4', instalacion: 'Instalacion 4' },
-  { id: 5, codigo: 'Codigo 5', tipoAnimal: 'Tipo Animal 5', instalacion: 'Instalacion 5' },
-];
 
 const paginationModel = { page: 0, pageSize: 5 };
 
 
 export const RegistroGrupoAnimal = () => {
 
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const [open, setOpen] = useState(false);
+  const [dataGrupoAnimal, setDataGrupoAnimal] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
 
   const columns = [
+    { field: 'id', headerName: 'Id', flex: 1 },
     { field: 'codigo', headerName: 'Código', flex: 1 },
-    { field: 'tipoAnimal', headerName: 'Tipo Animal', flex: 1 },
+    { field: 'tipo_animal', headerName: 'Tipo Animal', flex: 1 },
     { field: 'instalacion', headerName: 'Instalacion', flex: 1 },
-    
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
-
-
       ),
     }
   ];
 
 
-  useEffect( () => {
-    getAllFinca();
-  }, [] );
+  useEffect(() => {
+    getAllGrupoAnimal();
+  }, []);
 
-  const getAllFinca = async () => {
+  const getAllGrupoAnimal = async () => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axiosClient.get(`${GRUPO_ANIMAL.GET_ALL}`);
+      setDataGrupoAnimal(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -77,18 +68,34 @@ export const RegistroGrupoAnimal = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axiosClient.delete(`${GRUPO_ANIMAL.DELETE}/${id}`);
+        response.then((data) => {
+          Swal.fire({
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          });
+          data.status === 204 && getAllGrupoAnimal()
+        })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Error:',
+              text: error.response.data.message,
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+            });
+          });
       }
-    } );
-
-
+    });
   }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
       handleOpen();
     }
   }
@@ -101,7 +108,7 @@ export const RegistroGrupoAnimal = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar grupo animal</Button>
+      }} onClick={() => handleOpenModal("registrar", {})}>Agregar grupo animal</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -122,16 +129,16 @@ export const RegistroGrupoAnimal = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearGrupoAnimal accion={accion} />
+            <CrearGrupoAnimal accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllGrupoAnimal={getAllGrupoAnimal} />
           </Box>
         </Modal>
 
       </Box >
       <DataGrid
-        rows={rows}
+        rows={dataGrupoAnimal}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />

@@ -1,46 +1,83 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, FINCAS }  from '../../globals/constantes';
+import { COLORS, DICCIONARIOS, FINCAS, GRUPO_ANIMAL, INSTALACIONES } from '../../globals/constantes';
 import { crearGrupoAnimalValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
+import axiosClient from '@/axios/apiClient';
 
-export const CrearGrupoAnimal = ( { accion = "registrar", data } ) => {
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-  ];
+export const CrearGrupoAnimal = ({ accion = "registrar", data, getAllGrupoAnimal }) => {
+  console.log(accion, data)
+  const [tipoAnimal, setTipoAnimal] = useState([]);
+  const [dataInstalacion, setDataInstalacion] = useState([]);
 
-  const formik = useFormik( {
+  const formik = useFormik({
     initialValues: {
+      id: data?.id || '',
       codigo: data?.codigo || '',
-      tipoAnimal: data?.tipoAnimal || '',
+      tipo_animal: data?.tipo_animal?.toString() || '',
       instalacion: data?.instalacion || ''
     },
     validationSchema: crearGrupoAnimalValidationSchema,
-    onSubmit: async ( values ) => {
+    onSubmit: async (values) => {
+      console.log(values)
+      let newValues = values
+      if (accion == "registrar") {
+        console.log("registrar")
+        const { codigo, tipo_animal, instalacion } = values;
+        newValues = { codigo, tipo_animal, instalacion }
+      }
       try {
-        // Espera a que la solicitud axios termine
-        const response = await axios.post( `${FINCAS.POST_FINCA}`, values );
+        const response = accion === "registrar"
+          ? await axiosClient.post(`${GRUPO_ANIMAL.POST}`, newValues)
+          : await axiosClient.put(`${GRUPO_ANIMAL.PUT}${values.id}`, values);
 
-        Swal.fire( {
+        Swal.fire({
           icon: response.status === 200 ? 'success' : 'error',
-          title: response.status === 200 ? 'Finca creada correctamente' : 'Error al crear la finca',
+          title: response.status === 200 ? `${accion === "registrar" ? 'Creada correctamente' : 'Actualizada correctamente'}` : `${accion === "registrar" ? 'Error al crear' : 'Error al actualizar'}`,
           showConfirmButton: false,
           timer: 2000,
-        } );
-      } catch ( error ) {
-        console.error( 'Error al enviar el formulario:', error );
-        Swal.fire( {
+        });
+      } catch (error) {
+        Swal.fire({
           icon: 'error',
-          title: 'Hubo un error al procesar la solicitud',
+          title: 'Error:',
+          text: error.response.data.message,
           showConfirmButton: false,
-          timer: 2000,
-        } );
+          timer: 3000,
+        });
+      }
+      finally {
+        formik.resetForm();
+        getAllGrupoAnimal();
       }
     },
-  } );
+  });
+
+
+  useEffect(() => {
+    getTipoAnimal();
+    getAllInstalaciones();
+  }, []);
+
+  const getTipoAnimal = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_animal"));
+      setTipoAnimal(response.data.map(tipoAnimal => ({ label: tipoAnimal.nombre, value: tipoAnimal.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
+
+  const getAllInstalaciones = async () => {
+    try {
+      const response = await axiosClient.get(`${INSTALACIONES.GET_ALL}`);
+      setDataInstalacion(response.data.map(finca => ({ label: finca.nombre, value: finca.id })));
+    } catch (error) {
+    }
+  };
+
 
 
   return (
@@ -50,6 +87,8 @@ export const CrearGrupoAnimal = ( { accion = "registrar", data } ) => {
         onSubmit={formik.handleSubmit}
         sx={{ margin: '40px 10px', }}
       >
+        {/* {JSON.stringify(formik.values)}
+        {JSON.stringify(formik.errors)} */}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar grupo animal" : "Registro grupo animal"}
         </Typography>
@@ -62,39 +101,48 @@ export const CrearGrupoAnimal = ( { accion = "registrar", data } ) => {
             value={formik.values.codigo}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.codigo && Boolean( formik.errors.codigo )}
+            error={formik.touched.codigo && Boolean(formik.errors.codigo)}
             helperText={formik.touched.codigo && formik.errors.codigo}
           />
 
           <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.tipoAnimal}
-            onChange={( event, newValue ) => formik.setFieldValue( 'tipoAnimal', newValue )}
-            renderInput={( params ) => (
+            onChange={(event, value) => formik.setFieldValue('tipo_animal', value?.value)}
+            name="tipo_animal"
+            id='tipo_animal'
+            onBlur={formik.handleBlur}
+            error={formik.touched.tipo_animal && Boolean(formik.errors.tipo_animal)}
+            value={tipoAnimal.find((tipo) => tipo.value === formik.values.tipo_animal) || null} // Selecciona el objeto correspondiente
+            sablePortal
+            options={tipoAnimal}
+            getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo)
+            isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
+            renderInput={(params) => (
               <TextField
                 {...params}
-                label="tipoAnimal"
-                name="tipoAnimal"
-                error={formik.touched.tipoAnimal && Boolean( formik.errors.tipoAnimal )}
-                helperText={formik.touched.tipoAnimal && formik.errors.tipoAnimal}
+                label="Tipo Animal"
+                error={formik.touched.tipo_animal && Boolean(formik.errors.tipo_animal)} // Muestra el error
+                helperText={formik.touched.tipo_animal && formik.errors.tipo_animal} // Muestra el texto de ayuda del error
               />
             )}
           />
 
-
           <Autocomplete
-            disablePortal
-            options={top100Films.map( ( option ) => option.label )}
-            value={formik.values.instalacion}
-            onChange={( event, newValue ) => formik.setFieldValue( 'instalacion', newValue )}
-            renderInput={( params ) => (
+            onChange={(event, value) => formik.setFieldValue('instalacion', value?.value)}
+            name="instalacion"
+            id='instalacion'
+            onBlur={formik.handleBlur}
+            error={formik.touched.instalacion && Boolean(formik.errors.instalacion)}
+            value={dataInstalacion.find((tipo) => tipo.value === formik.values.instalacion) || null} // Selecciona el objeto correspondiente
+            sablePortal
+            options={dataInstalacion}
+            getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo)
+            isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
+            renderInput={(params) => (
               <TextField
                 {...params}
-                label="instalacion"
-                name="instalacion"
-                error={formik.touched.instalacion && Boolean( formik.errors.instalacion )}
-                helperText={formik.touched.instalacion && formik.errors.instalacion}
+                label="Instalación"
+                error={formik.touched.instalacion && Boolean(formik.errors.instalacion)} // Muestra el error
+                helperText={formik.touched.instalacion && formik.errors.instalacion} // Muestra el texto de ayuda del error
               />
             )}
           />

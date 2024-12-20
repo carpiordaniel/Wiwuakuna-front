@@ -19,12 +19,12 @@ const paginationModel = { page: 0, pageSize: 10 };
 
 export const Finca = () => {
 
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState( [] );
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
-  const dataRef = useRef( null );
+  const [open, setOpen] = useState(false);
+  const [dataFinca, setDataFinca] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
@@ -35,32 +35,32 @@ export const Finca = () => {
     // { field: 'instalaciones', headerName: 'Instalaciones', flex: 1 },
     {
       field: 'action', headerName: 'Action', flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar", params.row )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
       ),
     }
   ];
 
 
-  useEffect( () => {
+  useEffect(() => {
     getAllFinca();
-  }, [] );
+  }, []);
 
   const getAllFinca = async () => {
     try {
-      const response = await axiosClient.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data ); 
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axiosClient.get(`${FINCAS.GET_FINCA}`);
+      console.log(response.data);
+      setDataFinca(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -68,26 +68,24 @@ export const Finca = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axiosClient.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        response.then( ( data ) => {
-          Swal.fire( {
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axiosClient.delete(`${FINCAS.DELETE_FINCA}/${id}`);
+        response.then((data) => {
+          Swal.fire({
             title: '¡Completado!',
             text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
             icon: data.status === 204 ? 'success' : 'error',
             confirmButtonColor: '#3085d6',
-          } );
+          });
           data.status === 204 && getAllFinca()
-        } )
+        })
       }
-    } );
-
-
+    });
   }
-  const handleOpenModal = ( accion, data ) => {
-    setAccion( accion );
-    if ( data != "" ) {
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
       dataRef.current = data;
       handleOpen();
     }
@@ -101,7 +99,7 @@ export const Finca = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "registrar", {} )}>Agregar Finca</Button>
+      }} onClick={() => handleOpenModal("registrar", {})}>Agregar Finca</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -122,7 +120,7 @@ export const Finca = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearFinca accion={accion} data={accion === "editar" ? dataRef.current: {}} getAllFinca={getAllFinca} />
+            <CrearFinca accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllFinca={getAllFinca} />
           </Box>
         </Modal>
 
@@ -131,7 +129,7 @@ export const Finca = () => {
         rows={dataFinca}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />

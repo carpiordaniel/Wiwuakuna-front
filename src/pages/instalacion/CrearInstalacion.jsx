@@ -71,8 +71,6 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllInstalacion
   const getAllFincas = async () => {
     try {
       const response = await axiosClient.get(`${FINCAS.GET_FINCA}`);
-
-      console.log(response.data);
       setFincas(response.data.map(finca => ({ label: finca.nombre, value: finca.id })));
     } catch (error) {
       console.error('Error al obtener las fincas:', error);
@@ -82,7 +80,6 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllInstalacion
   const getAllTipoInstalacion = async () => {
     try {
       const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_instalacion"));
-      console.log(response.data);
       setTipoInstalacion(response.data.map(tipoInstal => ({ label: tipoInstal.nombre, value: tipoInstal.id_tabla })));
     } catch (error) {
       console.error('Error al obtener las fincas:', error);
