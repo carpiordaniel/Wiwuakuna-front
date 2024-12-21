@@ -49,8 +49,8 @@ export const ANIMALES = {
   GET_ALL: `${URL_BASE}/api/animales`,
   GET_BY_FILTER: `${URL_BASE}/api/animales`,
   POST: `${URL_BASE}/api/animales`,
-  PUT: (id) => `${URL_BASE}/api/animales/${id}`,
-  DELETE: (id) => `${URL_BASE}/api/animales/${id}`,
+  PUT: `${URL_BASE}/api/animales`,
+  DELETE:`${URL_BASE}/api/animales`,
 };
 export const LOTES = {
   GET_ALL: `${URL_BASE}/api/lotes`,
@@ -67,3 +67,15 @@ export const GRUPO_ANIMAL = {
   PUT: `${URL_BASE}/api/grupos/`,
   DELETE: `${URL_BASE}/api/grupos`,
 };
+
+
+ export const LISTA_SEXO_ANIMAL = [
+    { label: 'MACHO', value: 'MACHO' },
+    { label: 'HEMBRA', value: 'HEMBRA' },
+  ];
+
+  export const ESTADO_ANIMAL = [
+    { label: 'ACTIVO', value: true },
+    { label: 'DESACTIVO', value: false },
+  ];
+

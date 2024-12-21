@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { Paper, Box, Button, Modal, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Swal from 'sweetalert2';
@@ -6,6 +6,7 @@ import axiosClient from '../../axios/apiClient';
 import { FINCAS, INSTALACIONES, COLORS, ANIMALES } from '@/globals/constantes';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
+import { CrearRegistroAnimal } from './CrearRegistroAnimal';
 
 export const RegistroAnimal = () => {
   const [open, setOpen] = useState(false);
@@ -17,6 +18,9 @@ export const RegistroAnimal = () => {
   const [instalacionSeleccionada, setInstalacionSeleccionada] = useState('');
   const [loteSeleccionado, setLoteSeleccionado] = useState('');
   const [usuario, setUsuario] = useState(localStorage.getItem('USUARIO') || '');
+
+  const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -46,15 +50,15 @@ export const RegistroAnimal = () => {
   ];
 
   useEffect(() => {
-    cargarFincas();
+    // cargarFincas();
   }, [usuario]);
 
   useEffect(() => {
-    if (fincaSeleccionada) {
-      cargarInstalaciones();
-      cargarLotes();
-      cargarAnimales();
-    }
+    // if (fincaSeleccionada) {
+    cargarInstalaciones();
+    cargarLotes();
+    cargarAnimales();
+    // }
   }, [fincaSeleccionada, instalacionSeleccionada, loteSeleccionado]);
 
   const cargarFincas = async () => {
@@ -85,13 +89,16 @@ export const RegistroAnimal = () => {
     }
   };
 
+
+
+
   const cargarAnimales = async () => {
     try {
       const params = { finca: fincaSeleccionada };
       if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
       if (loteSeleccionado) params.lote = loteSeleccionado;
 
-      const response = await axiosClient.get(`${ANIMALES.GET_BY_FILTER}`, { params });
+      const response = await axiosClient.get(`${ANIMALES.GET_BY_FILTER}`, {});
       console.log(response.data);
       setAnimales(response.data);
     } catch (error) {
@@ -99,10 +106,53 @@ export const RegistroAnimal = () => {
     }
   };
 
+
+  const handleEliminar = (id) => {
+    Swal.fire({
+      title: '¿Estás seguro?',
+      text: 'No podrás revertir esta acción.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Sí, eliminar',
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axiosClient.delete(`${ANIMALES.DELETE}/${id}`);
+        response.then((data) => {
+          Swal.fire({
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          });
+          data.status === 204 && cargarAnimales()
+        })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Error:',
+              text: error.response.data.message,
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+            });
+          });
+      }
+    });
+  }
+
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
+      handleOpen();
+    }
+  }
+
+
   return (
     <Paper sx={{ width: '100%' }}>
       <Typography variant="h6" sx={{ margin: '10px' }}>
-        Administración de Animales
+        Administración de Animales.
       </Typography>
 
       <Box sx={{ display: 'flex', gap: 2, margin: '10px' }}>
@@ -161,10 +211,36 @@ export const RegistroAnimal = () => {
           color: 'white',
           backgroundColor: COLORS.PRIMARY,
         }}
-        onClick={handleOpen}
+        onClick={() => handleOpenModal("registrar", {})}
       >
         Agregar Animal
       </Button>
+
+      <Box sx={{ margin: "10px", width: '100%' }}>
+
+        <Modal
+          open={open}
+          onClose={handleClose}
+          aria-labelledby="modal-modal-title"
+          aria-describedby="modal-modal-description"
+        >
+          <Box sx={{
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            width: "calc(100% - 100px)",
+            bgcolor: 'background.paper',
+            boxShadow: 24,
+            borderRadius: '10px',
+            p: 4
+          }}>
+            <CrearRegistroAnimal accion={accion} data={accion === "editar" ? dataRef.current : {}} cargarAnimales={cargarAnimales} />
+          </Box>
+        </Modal>
+
+      </Box >
+
 
       <DataGrid
         rows={animales}
