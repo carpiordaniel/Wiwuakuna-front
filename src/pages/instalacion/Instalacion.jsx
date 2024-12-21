@@ -80,6 +80,14 @@ export const Instalacion = () => {
           });
           data.status === 204 && getAllInstalaciones()
         })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Error:',
+              text: error.response.data.message,
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+            });
+          });
       }
     });
   }

@@ -41,21 +41,13 @@ export const INSTALACIONES = {
   POST: `${URL_BASE}/api/instalaciones`,
   PUT: `${URL_BASE}/api/instalaciones`,
   DELETE: `${URL_BASE}/api/instalaciones`,
-  GET_BY_FILTER: (responsable, finca) =>
-    `${URL_BASE}/api/instalaciones/filtro?responsable=${responsable}${
-      finca ? `&finca=${finca}` : ""
-    }`,
+  GET_BY_FILTER: `${URL_BASE}/api/instalaciones`
   
 };
 
 export const ANIMALES = {
   GET_ALL: `${URL_BASE}/api/animales`,
-  GET_BY_FILTER: (finca, grupo, instalacion) => {
-    let query = `${URL_BASE}/api/animales?finca=${finca}`;
-    if (grupo) query += `&grupo=${grupo}`;
-    if (instalacion) query += `&instalacion=${instalacion}`;
-    return query;
-  },
+  GET_BY_FILTER: `${URL_BASE}/api/animales`,
   POST: `${URL_BASE}/api/animales`,
   PUT: (id) => `${URL_BASE}/api/animales/${id}`,
   DELETE: (id) => `${URL_BASE}/api/animales/${id}`,

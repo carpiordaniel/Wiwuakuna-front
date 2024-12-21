@@ -3,7 +3,9 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Paper, Box, Button, Modal, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
 import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
-import { FINCAS, INSTALACIONES, COLORS } from '@/globals/constantes';
+import { FINCAS, INSTALACIONES, COLORS, ANIMALES } from '@/globals/constantes';
+import EditIcon from '@mui/icons-material/Edit';
+import { Delete } from '@mui/icons-material';
 
 export const RegistroAnimal = () => {
   const [open, setOpen] = useState(false);
@@ -20,13 +22,27 @@ export const RegistroAnimal = () => {
   const handleClose = () => setOpen(false);
 
   const columns = [
+    { field: 'id', headerName: 'Id', flex: 1 },
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
-    { field: 'codigo', headerName: 'Código', flex: 1 },
     { field: 'sexo', headerName: 'Sexo', flex: 1 },
     { field: 'lote', headerName: 'Lote', flex: 1 },
     { field: 'estado', headerName: 'Estado', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'grupo', headerName: 'Grupo', flex: 1 },
+    { field: 'finca', headerName: 'Finca', flex: 1 },
+    {
+      field: 'action',
+      headerName: 'Action',
+      flex: 1,
+      renderCell: (params) => (
+        <>
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
+        </>
+
+
+      ),
+    }
   ];
 
   useEffect(() => {
@@ -43,7 +59,7 @@ export const RegistroAnimal = () => {
 
   const cargarFincas = async () => {
     try {
-      const response = await axiosClient.get(FINCAS.GET_BY_RESPONSABLE(usuario));
+      const response = await axiosClient.get(`${FINCAS.GET_FINCA}?responsable=${usuario}`);
       setFincas(response.data);
     } catch (error) {
       console.error('Error al cargar fincas:', error);
@@ -52,7 +68,8 @@ export const RegistroAnimal = () => {
 
   const cargarInstalaciones = async () => {
     try {
-      const response = await axiosClient.get(INSTALACIONES.GET_BY_FILTER(usuario, fincaSeleccionada));
+      const response = await axiosClient.get(`${INSTALACIONES.GET_BY_FILTER}?finca=${fincaSeleccionada}`);
+      console.log(response.data);
       setInstalaciones(response.data);
     } catch (error) {
       console.error('Error al cargar instalaciones:', error);
@@ -74,7 +91,8 @@ export const RegistroAnimal = () => {
       if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
       if (loteSeleccionado) params.lote = loteSeleccionado;
 
-      const response = await axiosClient.get('/api/filter-animales', { params });
+      const response = await axiosClient.get(`${ANIMALES.GET_BY_FILTER}`, { params });
+      console.log(response.data);
       setAnimales(response.data);
     } catch (error) {
       console.error('Error al cargar animales:', error);
