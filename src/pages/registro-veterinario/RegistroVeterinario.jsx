@@ -30,6 +30,8 @@ export const RegistroVeterinario = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
+
 
   const columns = [
     { field: 'animal', headerName: 'Animal', flex: 1 },
@@ -59,10 +61,10 @@ export const RegistroVeterinario = () => {
 
 
   useEffect(() => {
-    getAllFinca();
+    getAllVeterinarios();
   }, []);
 
-  const getAllFinca = async () => {
+  const getAllVeterinarios = async () => {
     try {
       const response = await axios.get(`${FINCAS.GET_FINCA}`);
       console.log(response.data);
@@ -90,12 +92,14 @@ export const RegistroVeterinario = () => {
 
 
   }
-  const handleOpenModal = (dato) => {
-    setAccion(dato);
-    if (dato != "") {
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
       handleOpen();
     }
   }
+
 
 
   return (
@@ -105,7 +109,7 @@ export const RegistroVeterinario = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal("crear")}>Agregar veterinario</Button>
+      }} onClick={() => handleOpenModal("registrar", {})}>Agregar veterinario</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -126,7 +130,7 @@ export const RegistroVeterinario = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearRegistroVeterinario accion={accion} />
+            <CrearRegistroVeterinario accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllVeterinarios={getAllVeterinarios} />
           </Box>
         </Modal>
 

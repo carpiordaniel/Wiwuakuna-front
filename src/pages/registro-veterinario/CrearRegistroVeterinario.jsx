@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { ANIMALES, COLORS, DICCIONARIOS, ESTADO_ANIMAL, FINCAS, USUARIOS } from '../../globals/constantes';
+import { ANIMALES, COLORS, DICCIONARIOS, ESTADO_ANIMAL, FINCAS, formatDateToYYYYMMDD, USUARIOS, VETERINARIO } from '../../globals/constantes';
 import { crearRegistroVeterinarioValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
@@ -10,18 +10,13 @@ import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import dayjs from 'dayjs';
 
-export const CrearRegistroVeterinario = ({ accion = "registrar", data }) => {
-  const top100Films = [
-    { label: 'The Shawshank Redemption', year: 1994 },
-    { label: 'The Godfather', year: 1972 },
-  ];
+export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVeterinarios }) => {
 
   const [animales, setAnimales] = useState([]);
   const [tipoAnimal, setTipoAnimal] = useState([]);
   const [responsables, setResponsables] = useState([]);
-  const [value, setValue] = useState(new Date());
-
 
   const formik = useFormik({
     initialValues: {
@@ -31,30 +26,47 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data }) => {
       diagnostico: data?.diagnostico || '',
       tratamiento: data?.tratamiento || '',
       medicamento: data?.medicamento || '',
-      diasTratamiento: data?.diasTratamiento || '',
-      notas: data?.notas || '',
+      dias: data?.dias || '',
       estado: data?.estado || '',
+      responsable: data?.responsable || '',
+      veterinario: data?.veterinario || '',
+      fecha: data?.fecha || dayjs(),
     },
     validationSchema: crearRegistroVeterinarioValidationSchema,
     onSubmit: async (values) => {
+      let newValues = values
+      if (accion == "registrar") {
+        const { animal, tipo, enfermedad, diagnostico, tratamiento, medicamento, dias, estado, responsable, veterinario, fecha } = values;
+        newValues = { animal, tipo, enfermedad, diagnostico, tratamiento, medicamento, dias, estado, responsable, veterinario, fecha: formatDateToYYYYMMDD(fecha) }
+      }
       try {
-        // Espera a que la solicitud axios termine
-        const response = await axios.post(`${FINCAS.POST_FINCA}`, values);
+        const response = accion === "registrar"
+          ? await axiosClient.post(`${VETERINARIO.POST}`, {
+            ...newValues,
+            estado: true ? 1 : 0
+          })
+          : await axiosClient.put(`${VETERINARIO.PUT}${data.id}`, {
+            ...values,
+            estado: true ? 1 : 0
+          });
 
         Swal.fire({
           icon: response.status === 200 ? 'success' : 'error',
-          title: response.status === 200 ? 'Finca creada correctamente' : 'Error al crear la finca',
+          title: response.status === 200 ? `${accion === "registrar" ? 'Creada correctamente' : 'Actualizada correctamente'}` : `${accion === "registrar" ? 'Error al crear' : 'Error al actualizar'}`,
           showConfirmButton: false,
-          timer: 2000,
+          timer: 3000,
         });
       } catch (error) {
-        console.error('Error al enviar el formulario:', error);
         Swal.fire({
           icon: 'error',
-          title: 'Hubo un error al procesar la solicitud',
+          title: 'Error:',
+          text: error.response.data.message,
           showConfirmButton: false,
-          timer: 2000,
+          timer: 3000,
         });
+      } finally {
+        formik.resetForm();
+        //getAllVeterinarios();
       }
     },
   });
@@ -104,6 +116,7 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data }) => {
         sx={{ margin: '40px 10px', }}
       >
         {JSON.stringify(formik.values)}
+        {JSON.stringify(formik.errors)}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar registro veterinario" : "Registro veterinario"}
         </Typography>
@@ -196,13 +209,13 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data }) => {
           />
           <TextField
             fullWidth
-            label="Dias Tratamiento"
-            name="diasTratamiento"
-            value={formik.values.diasTratamiento}
+            label="Dias"
+            name="dias"
+            value={formik.values.dias}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.diasTratamiento && Boolean(formik.errors.diasTratamiento)}
-            helperText={formik.touched.diasTratamiento && formik.errors.diasTratamiento}
+            error={formik.touched.dias && Boolean(formik.errors.dias)}
+            helperText={formik.touched.dias && formik.errors.dias}
           />
           <Autocomplete
             onChange={(event, value) => formik.setFieldValue('estado', value?.value)}
@@ -259,16 +272,16 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data }) => {
 
 
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DatePicker']}>
-              <DatePicker
-                label="Controlled picker"
-                // value={value?.toString()}
-                onChange={(newValue) => setValue(newValue)}
-                sx={{ width: "100%" }}
-              />
-            </DemoContainer>
+            <DatePicker
+              label="Controlled picker"
+              value={formik.values.fecha} // Asegúrate de que sea compatible con Day.js
+              onChange={(newValue) => {
+                formik.setFieldValue('fecha', newValue); // Actualiza el estado en Formik
+              }}
+              renderInput={(params) => <input {...params} />}
+              error={formik.touched.fecha && Boolean(formik.errors.fecha)}
+            />
           </LocalizationProvider>
-
         </div>
 
         <Button

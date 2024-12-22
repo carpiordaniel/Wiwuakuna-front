@@ -9,8 +9,10 @@ export const crearRegistroVeterinarioValidationSchema = Yup.object({
   diagnostico: Yup.string().required('El campo es obligatorio'),
   tratamiento: Yup.string().required('El campo es obligatorio'),
   medicamento: Yup.string().required('El campo es obligatorio'),
-  diasTratamiento: Yup.string().required('El campo es obligatorio'),
-  notas: Yup.string().required('El campo es obligatorio'),
+  dias: Yup.string().required('El campo es obligatorio'),
   estado: Yup.string().required('El campo es obligatorio'),
+  responsable: Yup.string().required('El campo es obligatorio'),
+  veterinario: Yup.string().required('El campo es obligatorio'),
+  fecha: Yup.string().required('El campo es obligatorio'),
 });
 

@@ -86,3 +86,16 @@ export const ESTADO_ANIMAL = [
   { label: 'DESACTIVO', value: false },
 ];
 
+
+export const formatDateToYYYYMMDD = (date) => {
+  if (!date) return null; // Si la fecha es null o undefined, retorna null
+
+  const parsedDate = new Date(date); // Intenta convertir a objeto Date
+  if (isNaN(parsedDate.getTime())) return null; // Verifica si la fecha es válida
+
+  const year = parsedDate.getFullYear();
+  const month = String(parsedDate.getMonth() + 1).padStart(2, '0'); // Agrega cero inicial al mes
+  const day = String(parsedDate.getDate()).padStart(2, '0'); // Agrega cero inicial al día
+
+  return `${year}-${month}-${day}`;
+}
