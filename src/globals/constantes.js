@@ -42,7 +42,7 @@ export const INSTALACIONES = {
   PUT: `${URL_BASE}/api/instalaciones`,
   DELETE: `${URL_BASE}/api/instalaciones`,
   GET_BY_FILTER: `${URL_BASE}/api/instalaciones`
-  
+
 };
 
 export const ANIMALES = {
@@ -50,7 +50,7 @@ export const ANIMALES = {
   GET_BY_FILTER: `${URL_BASE}/api/animales`,
   POST: `${URL_BASE}/api/animales`,
   PUT: `${URL_BASE}/api/animales`,
-  DELETE:`${URL_BASE}/api/animales`,
+  DELETE: `${URL_BASE}/api/animales`,
 };
 export const LOTES = {
   GET_ALL: `${URL_BASE}/api/lotes`,
@@ -68,14 +68,21 @@ export const GRUPO_ANIMAL = {
   DELETE: `${URL_BASE}/api/grupos`,
 };
 
+export const VETERINARIO = {
+  GET_ALL: `${URL_BASE}/api/registros/veterinario`,
+  GET_BY_FILTER: `${URL_BASE}/api/registros/veterinario`,
+  POST: `${URL_BASE}/api/registros/veterinario`,
+  PUT: `${URL_BASE}/api/registros/veterinario`,
+  DELETE: `${URL_BASE}/api/registros/veterinario`,
+};
 
- export const LISTA_SEXO_ANIMAL = [
-    { label: 'MACHO', value: 'MACHO' },
-    { label: 'HEMBRA', value: 'HEMBRA' },
-  ];
+export const LISTA_SEXO_ANIMAL = [
+  { label: 'MACHO', value: 'MACHO' },
+  { label: 'HEMBRA', value: 'HEMBRA' },
+];
 
-  export const ESTADO_ANIMAL = [
-    { label: 'ACTIVO', value: true },
-    { label: 'DESACTIVO', value: false },
-  ];
+export const ESTADO_ANIMAL = [
+  { label: 'ACTIVO', value: true },
+  { label: 'DESACTIVO', value: false },
+];
 

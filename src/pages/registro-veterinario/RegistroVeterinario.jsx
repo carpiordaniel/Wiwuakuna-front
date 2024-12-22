@@ -5,9 +5,9 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
+import { COLORS, FINCAS } from '../../globals/constantes';
 
-import {CrearRegistroVeterinario} from './CrearRegistroVeterinario';
+import { CrearRegistroVeterinario } from './CrearRegistroVeterinario';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
@@ -25,11 +25,11 @@ const paginationModel = { page: 0, pageSize: 5 };
 
 export const RegistroVeterinario = () => {
 
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const [open, setOpen] = useState(false);
+  const [dataFinca, setDataFinca] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
 
   const columns = [
     { field: 'animal', headerName: 'Animal', flex: 1 },
@@ -41,15 +41,15 @@ export const RegistroVeterinario = () => {
     { field: 'dias_tratamiento', headerName: 'Dias de tratamiento', flex: 1 },
     { field: 'notas', headerName: 'Notas', flex: 1 },
     { field: 'estado', headerName: 'Estado', flex: 1 },
-    
+
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar")} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
 
 
@@ -58,22 +58,22 @@ export const RegistroVeterinario = () => {
   ];
 
 
-  useEffect( () => {
+  useEffect(() => {
     getAllFinca();
-  }, [] );
+  }, []);
 
   const getAllFinca = async () => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axios.get(`${FINCAS.GET_FINCA}`);
+      console.log(response.data);
+      setDataFinca(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -81,18 +81,18 @@ export const RegistroVeterinario = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axios.delete(`${FINCAS.DELETE_FINCA}/${id}`);
+        Swal.fire('¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error');
       }
-    } );
+    });
 
 
   }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+  const handleOpenModal = (dato) => {
+    setAccion(dato);
+    if (dato != "") {
       handleOpen();
     }
   }
@@ -105,7 +105,7 @@ export const RegistroVeterinario = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar veterinario</Button>
+      }} onClick={() => handleOpenModal("crear")}>Agregar veterinario</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -135,7 +135,7 @@ export const RegistroVeterinario = () => {
         rows={rows}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />
