@@ -7,52 +7,52 @@ import { COLORS, FINCAS } from '@/globals/constantes';
 import axiosClient from '../../axios/apiClient';
 import Catalogos from '../catalogos/Catalogos';
 
-const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
-  const formik = useFormik( {
+const CrearFinca = ({ accion = "registrar", data, getAllFinca }) => {
+  const formik = useFormik({
     initialValues: {
       id: data?.id || null,
       nombre: data?.nombre || '',
       dimension: data?.dimension || '',
       pais: data?.pais || '',
       ciudad: data?.ciudad || '',
-      responsable: data?.responsable || localStorage.getItem( 'USUARIO' ) || 'SIN RESPONSABLE',	
+      responsable: data?.responsable || localStorage.getItem('USUARIO') || 'SIN RESPONSABLE',
     },
     validationSchema: crearFincaValidationSchema,
-    onSubmit: async ( values ) => {
+    onSubmit: async (values) => {
       let newValues = values
       if (accion == "registrar") {
-        console.log("registrar")	
-        const { nombre, dimension, pais, ciudad, responsable} = values; 
-        newValues = { nombre, dimension, pais, ciudad, responsable}
+        console.log("registrar")
+        const { nombre, dimension, pais, ciudad, responsable } = values;
+        newValues = { nombre, dimension, pais, ciudad, responsable }
       }
       try {
-        const response = accion === "registrar" 
-                          ? await axiosClient.post( `${FINCAS.POST_FINCA}`, newValues )
-                          : await axiosClient.put( `${FINCAS.PUT_FINCA}${data.id}`, values );
+        const response = accion === "registrar"
+          ? await axiosClient.post(`${FINCAS.POST_FINCA}`, newValues)
+          : await axiosClient.put(`${FINCAS.PUT_FINCA}${data.id}`, values);
 
-        Swal.fire( {
+        Swal.fire({
           icon: response.status === 200 ? 'success' : 'error',
-          title: response.status === 200 ? `${accion === "registrar" ? 'Finca creada correctamente' : 'Finca actualizada correctamente'}` :  `${accion === "registrar" ? 'Error al crear la finca' : 'Error al actualizar la finca'}`,
+          title: response.status === 200 ? `${accion === "registrar" ? 'Finca creada correctamente' : 'Finca actualizada correctamente'}` : `${accion === "registrar" ? 'Error al crear la finca' : 'Error al actualizar la finca'}`,
           showConfirmButton: false,
           timer: 2000,
-        } );
-      } catch ( error ) {
-        Swal.fire( {
+        });
+      } catch (error) {
+        Swal.fire({
           icon: 'error',
           title: 'Error:',
-          text: error.response.data.message ,
+          text: error.response.data.message,
           showConfirmButton: false,
           timer: 3000,
-        } );
-      }finally {
+        });
+      } finally {
         formik.resetForm();
         getAllFinca();
       }
     },
-  } );
+  });
 
   return (
-    <div>
+    <>
       <Box
         component="form"
         onSubmit={formik.handleSubmit}
@@ -72,7 +72,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
             value={formik.values.nombre}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.nombre && Boolean( formik.errors.nombre )}
+            error={formik.touched.nombre && Boolean(formik.errors.nombre)}
             helperText={formik.touched.nombre && formik.errors.nombre}
           />
 
@@ -83,7 +83,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
             value={formik.values.dimension}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.dimension && Boolean( formik.errors.dimension )}
+            error={formik.touched.dimension && Boolean(formik.errors.dimension)}
             helperText={formik.touched.dimension && formik.errors.dimension}
           />
 
@@ -94,7 +94,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
             value={formik.values.pais}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.pais && Boolean( formik.errors.pais )}
+            error={formik.touched.pais && Boolean(formik.errors.pais)}
             helperText={formik.touched.pais && formik.errors.pais}
           />
 
@@ -105,19 +105,19 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
             value={formik.values.ciudad}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.ciudad && Boolean( formik.errors.ciudad )}
+            error={formik.touched.ciudad && Boolean(formik.errors.ciudad)}
             helperText={formik.touched.ciudad && formik.errors.ciudad}
           />
 
           <TextField
-            disabled = {accion === "registrar" ? true : false}
+            disabled={accion === "registrar" ? true : false}
             fullWidth
             label="Responsable"
             name="responsable"
             value={formik.values.responsable}
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
-            error={formik.touched.responsable && Boolean( formik.errors.responsable )}
+            error={formik.touched.responsable && Boolean(formik.errors.responsable)}
             helperText={formik.touched.responsable && formik.errors.responsable}
           />
 
@@ -132,7 +132,7 @@ const CrearFinca = ( { accion = "registrar", data , getAllFinca } ) => {
           {accion === "editar" ? "Editar" : "Registrar"}
         </Button>
       </Box>
-    </div>
+    </>
   );
 };
 

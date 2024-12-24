@@ -7,18 +7,19 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
 
 import CrearFinca from './CrearFinca';
-
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import axiosClient from '../../axios/apiClient';
 import { COLORS, FINCAS } from '@/globals/constantes';
+import { FiltroFinca } from './FiltroFinca';
 
 
 const paginationModel = { page: 0, pageSize: 10 };
-
 export const Finca = () => {
 
+  const [openFiltro, setOpenFiltro] = useState(false);
   const [open, setOpen] = useState(false);
   const [dataFinca, setDataFinca] = useState([]);
   const handleOpen = () => setOpen(true);
@@ -49,9 +50,9 @@ export const Finca = () => {
     getAllFinca();
   }, []);
 
-  const getAllFinca = async () => {
+  const getAllFinca = async (params) => {
     try {
-      const response = await axiosClient.get(`${FINCAS.GET_FINCA}`);
+      const response = await axiosClient.get(FINCAS.GET_FINCA, { params: params });
       console.log(response.data);
       setDataFinca(response.data);
     } catch (error) {
@@ -91,49 +92,63 @@ export const Finca = () => {
     }
   }
 
+  const setFilters = (filters) => {
+    console.log(filters);
+    getAllFinca(filters);
+  }
 
   return (
-    <Paper sx={{ width: '100%' }}>
-      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de Finca</Typography>
+    <>
+      <Paper sx={{ width: '100%' }}>
+        <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de Finca</Typography>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal("registrar", {})}>Agregar Finca</Button>
+        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-      <Box sx={{ margin: "10px", width: '100%' }}>
+          <Button variant="contained" sx={{
+            margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+            backgroundColor: COLORS.PRIMARY
+          }} onClick={() => handleOpenModal("registrar", {})}>Agregar Finca</Button>
 
-        <Modal
-          open={open}
-          onClose={handleClose}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <Box sx={{
-            position: 'absolute',
-            top: '50%',
-            left: '50%',
-            transform: 'translate(-50%, -50%)',
-            width: "calc(100% - 100px)",
-            bgcolor: 'background.paper',
-            boxShadow: 24,
-            borderRadius: '10px',
-            p: 4
-          }}>
-            <CrearFinca accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllFinca={getAllFinca} />
-          </Box>
-        </Modal>
+          <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+            sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+            } />
 
-      </Box >
-      <DataGrid
-        rows={dataFinca}
-        columns={columns}
-        initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[5, 10]}
-        checkboxSelection
-        sx={{ border: 0 }}
-      />
-    </Paper >
+        </div>
+        <Box sx={{ margin: "10px", width: '100%' }}>
+
+          <Modal
+            open={open}
+            onClose={handleClose}
+            aria-labelledby="modal-modal-title"
+            aria-describedby="modal-modal-description"
+          >
+            <Box sx={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: "calc(100% - 100px)",
+              bgcolor: 'background.paper',
+              boxShadow: 24,
+              borderRadius: '10px',
+              p: 4
+            }}>
+              <CrearFinca accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllFinca={getAllFinca} />
+            </Box>
+          </Modal>
+
+        </Box >
+        <DataGrid
+          rows={dataFinca}
+          columns={columns}
+          initialState={{ pagination: { paginationModel } }}
+          pageSizeOptions={[5, 10]}
+          checkboxSelection
+          sx={{ border: 0 }}
+        />
+      </Paper >
+      {openFiltro && <FiltroFinca open={openFiltro} setOnClose={() => setOpenFiltro(false)} setFilters={setFilters} />}
+    </>
   );
 }
 

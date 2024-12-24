@@ -16,6 +16,7 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
 
   const [animales, setAnimales] = useState([]);
   const [tipoAnimal, setTipoAnimal] = useState([]);
+  const [estadoTratamiento, setEstadoTratamiento] = useState([]);
   const [responsables, setResponsables] = useState([]);
 
   const formik = useFormik({
@@ -43,11 +44,15 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
         const response = accion === "registrar"
           ? await axiosClient.post(`${VETERINARIO.POST}`, {
             ...newValues,
-            estado: true ? 1 : 0
+            estado: true ? 1 : 0,
+            tipo: Number(newValues.tipo),
+            dias: Number(newValues.dias),
           })
           : await axiosClient.put(`${VETERINARIO.PUT}${data.id}`, {
             ...values,
-            estado: true ? 1 : 0
+            estado: true ? 1 : 0,
+            tipo: Number(values.tipo),
+            dias: Number(values.dias),
           });
 
         Swal.fire({
@@ -65,7 +70,7 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
           timer: 3000,
         });
       } finally {
-        formik.resetForm();
+        //formik.resetForm();
         //getAllVeterinarios();
       }
     },
@@ -75,8 +80,9 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
 
   useEffect(() => {
     cargarAnimales();
-    getTipoAnimal();
+    getTipoTratamiento();
     getAllResponsables();
+    getEstadoTratamiento();
   }, []);
   const cargarAnimales = async () => {
     try {
@@ -88,9 +94,9 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
     }
   }
 
-  const getTipoAnimal = async () => {
+  const getTipoTratamiento = async () => {
     try {
-      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_animal"));
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_tratamiento"));
       setTipoAnimal(response.data.map(tipoAnimal => ({ label: tipoAnimal.nombre, value: tipoAnimal.id_tabla })));
     } catch (error) {
       console.error('Error al obtener las fincas:', error);
@@ -107,12 +113,24 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
     }
   }
 
+  const getEstadoTratamiento = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("estado_tratamiento"));
+      console.log(response.data);
+      setEstadoTratamiento(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
+
+
+
 
   return (
     <div>
       <Box
         component="form"
-        onSubmit={formik.handleSubmit}
+
         sx={{ margin: '40px 10px', }}
       >
         {JSON.stringify(formik.values)}
@@ -123,7 +141,9 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))', gap: '1rem' }}>
 
           <Autocomplete
-            onChange={(event, value) => formik.setFieldValue('animal', value?.value)}
+            onChange={(event, value) => {
+              formik.setFieldValue('animal', value?.value)
+            }}
             name="animal"
             id='animal'
             onBlur={formik.handleBlur}
@@ -157,7 +177,7 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Tipo Animal"
+                label="Tipo tratamiento"
                 error={formik.touched.tipo && Boolean(formik.errors.tipo)} // Muestra el error
                 helperText={formik.touched.tipo && formik.errors.tipo} // Muestra el texto de ayuda del error
               />
@@ -223,9 +243,9 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
             id='estado'
             onBlur={formik.handleBlur}
             error={formik.touched.estado && Boolean(formik.errors.estado)}
-            value={ESTADO_ANIMAL.find((tipo) => tipo.value === formik.values.estado) || null} // Selecciona el objeto correspondiente
+            value={estadoTratamiento.find((tipo) => tipo.value === formik.values.estado) || null} // Selecciona el objeto correspondiente
             sablePortal
-            options={ESTADO_ANIMAL}
+            options={estadoTratamiento}
             getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo)
             isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
             renderInput={(params) => (
@@ -285,6 +305,7 @@ export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVet
         </div>
 
         <Button
+          onClick={formik.handleSubmit}
           type="submit"
           variant="contained"
           fullWidth
