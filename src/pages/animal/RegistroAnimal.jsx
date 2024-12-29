@@ -16,12 +16,6 @@ export const RegistroAnimal = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
 
   const [animales, setAnimales] = useState([]);
-  const [fincas, setFincas] = useState([]);
-  const [instalaciones, setInstalaciones] = useState([]);
-  const [lotes, setLotes] = useState([]);
-  const [fincaSeleccionada, setFincaSeleccionada] = useState('');
-  const [instalacionSeleccionada, setInstalacionSeleccionada] = useState('');
-  const [loteSeleccionado, setLoteSeleccionado] = useState('');
   const [usuario, setUsuario] = useState(localStorage.getItem('USUARIO') || '');
 
   const [accion, setAccion] = useState("");
@@ -58,53 +52,10 @@ export const RegistroAnimal = () => {
     cargarAnimales();
   }, [usuario]);
 
-  // useEffect(() => {
-  //   // if (fincaSeleccionada) {
-  //   cargarInstalaciones();
-  //   cargarLotes();
-  //   cargarAnimales();
-  //   // }
-  // }, [fincaSeleccionada, instalacionSeleccionada, loteSeleccionado]);
-
-  // const cargarFincas = async () => {
-  //   try {
-  //     const response = await axiosClient.get(`${FINCAS.GET_FINCA}?responsable=${usuario}`);
-  //     setFincas(response.data);
-  //   } catch (error) {
-  //     console.error('Error al cargar fincas:', error);
-  //   }
-  // }
-
-  // const cargarInstalaciones = async () => {
-  //   try {
-  //     const response = await axiosClient.get(`${INSTALACIONES.GET_BY_FILTER}?finca=${fincaSeleccionada}`);
-  //     console.log(response.data);
-  //     setInstalaciones(response.data);
-  //   } catch (error) {
-  //     console.error('Error al cargar instalaciones:', error);
-  //   }
-  // };
-
-  // const cargarLotes = async () => {
-  //   try {
-  //     const response = await axiosClient.get(`/api/lotes/finca/${fincaSeleccionada}`);
-  //     setLotes(response.data);
-  //   } catch (error) {
-  //     console.error('Error al cargar lotes:', error);
-  //   }
-  // };
-
-
-
 
   const cargarAnimales = async (params) => {
     try {
-      // const params = { finca: fincaSeleccionada };
-      // if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
-      // if (loteSeleccionado) params.lote = loteSeleccionado;
-
       const response = await axiosClient.get(ANIMALES.GET_BY_FILTER, { params: params });
-      console.log(response.data);
       setAnimales(response.data);
     } catch (error) {
       console.error('Error al cargar animales:', error);
@@ -164,53 +115,6 @@ export const RegistroAnimal = () => {
       </Typography>
 
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
-        {/* <Box sx={{ display: 'flex', gap: 2, margin: '10px' }}>
-        <FormControl fullWidth>
-          <InputLabel id="finca-select-label">Finca</InputLabel>
-          <Select
-            labelId="finca-select-label"
-            value={fincaSeleccionada}
-            onChange={(e) => setFincaSeleccionada(e.target.value)}
-          >
-            {fincas.map((finca) => (
-              <MenuItem key={finca.id} value={finca.id}>
-                {finca.nombre}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel id="instalacion-select-label">Instalación</InputLabel>
-          <Select
-            labelId="instalacion-select-label"
-            value={instalacionSeleccionada}
-            onChange={(e) => setInstalacionSeleccionada(e.target.value)}
-          >
-            {instalaciones.map((instalacion) => (
-              <MenuItem key={instalacion.id} value={instalacion.id}>
-                {instalacion.nombre}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-
-        <FormControl fullWidth>
-          <InputLabel id="lote-select-label">Lote</InputLabel>
-          <Select
-            labelId="lote-select-label"
-            value={loteSeleccionado}
-            onChange={(e) => setLoteSeleccionado(e.target.value)}
-          >
-            {lotes.map((lote) => (
-              <MenuItem key={lote.id} value={lote.id}>
-                {lote.nombre}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
-      </Box> */}
 
         <Button
           variant="contained"

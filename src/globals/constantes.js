@@ -57,7 +57,7 @@ export const LOTES = {
   GET_BY_ID: (id) => `${URL_BASE}/api/lotes/${id}`,
   POST: `${URL_BASE}/api/lotes`,
   PUT: (id) => `${URL_BASE}/api/lotes/${id}`,
-  DELETE: (id) => `${URL_BASE}/api/lotes/${id}`,
+  DELETE: `${URL_BASE}/api/lotes`,
   GET_BY_FINCA: (fincaId) => `${URL_BASE}/api/lotes/finca/${fincaId}`,
 };
 
@@ -85,6 +85,7 @@ export const ESTADO_ANIMAL = [
   { label: 'ACTIVO', value: true },
   { label: 'DESACTIVO', value: false },
 ];
+
 
 
 export const formatDateToYYYYMMDD = (date) => {
