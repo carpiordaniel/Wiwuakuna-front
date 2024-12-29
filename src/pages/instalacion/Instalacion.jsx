@@ -6,16 +6,18 @@ import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
 import { COLORS, INSTALACIONES } from '../../globals/constantes';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import { CrearInstalacion } from './CrearInstalacion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axiosClient from '@/axios/apiClient';
+import { FiltroInstalacion } from './FiltroInstalacion';
 
 
 export const Instalacion = () => {
-
+  const [openFiltro, setOpenFiltro] = useState(false);
   const paginationModel = { page: 0, pageSize: 5 };
   const [open, setOpen] = useState(false);
   const [dataInstalacion, setDataInstalacion] = useState([]);
@@ -51,9 +53,9 @@ export const Instalacion = () => {
     getAllInstalaciones();
   }, []);
 
-  const getAllInstalaciones = async () => {
+  const getAllInstalaciones = async (params) => {
     try {
-      const response = await axiosClient.get(`${INSTALACIONES.GET_ALL}`);
+      const response = await axiosClient.get(INSTALACIONES.GET_ALL, { params: params });
       setDataInstalacion(response.data);
     } catch (error) {
     }
@@ -101,15 +103,25 @@ export const Instalacion = () => {
     }
   }
 
-
+  const setFilters = (filters) => {
+    console.log(filters);
+    getAllInstalaciones(filters);
+  }
   return (
     <Paper sx={{ width: '100%' }}>
       <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de instalaciones</Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
+        <Button variant="contained" sx={{
+          margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+          backgroundColor: COLORS.PRIMARY
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
+        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+          } />
+
+      </div>
+
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -143,7 +155,13 @@ export const Instalacion = () => {
         checkboxSelection
         sx={{ border: 0 }}
       />
+
+      {openFiltro && <FiltroInstalacion open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
+
     </Paper >
+
   );
 }
 

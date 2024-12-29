@@ -7,9 +7,14 @@ import { FINCAS, INSTALACIONES, COLORS, ANIMALES } from '@/globals/constantes';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
 import { CrearRegistroAnimal } from './CrearRegistroAnimal';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { FiltroInstalacion } from '../instalacion/FiltroInstalacion';
+import { FiltroAnimal } from './FiltroAnimal';
 
 export const RegistroAnimal = () => {
   const [open, setOpen] = useState(false);
+  const [openFiltro, setOpenFiltro] = useState(false);
+
   const [animales, setAnimales] = useState([]);
   const [fincas, setFincas] = useState([]);
   const [instalaciones, setInstalaciones] = useState([]);
@@ -50,55 +55,55 @@ export const RegistroAnimal = () => {
   ];
 
   useEffect(() => {
-    // cargarFincas();
+    cargarAnimales();
   }, [usuario]);
 
-  useEffect(() => {
-    // if (fincaSeleccionada) {
-    cargarInstalaciones();
-    cargarLotes();
-    cargarAnimales();
-    // }
-  }, [fincaSeleccionada, instalacionSeleccionada, loteSeleccionado]);
+  // useEffect(() => {
+  //   // if (fincaSeleccionada) {
+  //   cargarInstalaciones();
+  //   cargarLotes();
+  //   cargarAnimales();
+  //   // }
+  // }, [fincaSeleccionada, instalacionSeleccionada, loteSeleccionado]);
 
-  const cargarFincas = async () => {
+  // const cargarFincas = async () => {
+  //   try {
+  //     const response = await axiosClient.get(`${FINCAS.GET_FINCA}?responsable=${usuario}`);
+  //     setFincas(response.data);
+  //   } catch (error) {
+  //     console.error('Error al cargar fincas:', error);
+  //   }
+  // }
+
+  // const cargarInstalaciones = async () => {
+  //   try {
+  //     const response = await axiosClient.get(`${INSTALACIONES.GET_BY_FILTER}?finca=${fincaSeleccionada}`);
+  //     console.log(response.data);
+  //     setInstalaciones(response.data);
+  //   } catch (error) {
+  //     console.error('Error al cargar instalaciones:', error);
+  //   }
+  // };
+
+  // const cargarLotes = async () => {
+  //   try {
+  //     const response = await axiosClient.get(`/api/lotes/finca/${fincaSeleccionada}`);
+  //     setLotes(response.data);
+  //   } catch (error) {
+  //     console.error('Error al cargar lotes:', error);
+  //   }
+  // };
+
+
+
+
+  const cargarAnimales = async (params) => {
     try {
-      const response = await axiosClient.get(`${FINCAS.GET_FINCA}?responsable=${usuario}`);
-      setFincas(response.data);
-    } catch (error) {
-      console.error('Error al cargar fincas:', error);
-    }
-  }
+      // const params = { finca: fincaSeleccionada };
+      // if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
+      // if (loteSeleccionado) params.lote = loteSeleccionado;
 
-  const cargarInstalaciones = async () => {
-    try {
-      const response = await axiosClient.get(`${INSTALACIONES.GET_BY_FILTER}?finca=${fincaSeleccionada}`);
-      console.log(response.data);
-      setInstalaciones(response.data);
-    } catch (error) {
-      console.error('Error al cargar instalaciones:', error);
-    }
-  };
-
-  const cargarLotes = async () => {
-    try {
-      const response = await axiosClient.get(`/api/lotes/finca/${fincaSeleccionada}`);
-      setLotes(response.data);
-    } catch (error) {
-      console.error('Error al cargar lotes:', error);
-    }
-  };
-
-
-
-
-  const cargarAnimales = async () => {
-    try {
-      const params = { finca: fincaSeleccionada };
-      if (instalacionSeleccionada) params.instalacion = instalacionSeleccionada;
-      if (loteSeleccionado) params.lote = loteSeleccionado;
-
-      const response = await axiosClient.get(`${ANIMALES.GET_BY_FILTER}`, {});
+      const response = await axiosClient.get(ANIMALES.GET_BY_FILTER, { params: params });
       console.log(response.data);
       setAnimales(response.data);
     } catch (error) {
@@ -147,7 +152,10 @@ export const RegistroAnimal = () => {
       handleOpen();
     }
   }
-
+  const setFilters = (filters) => {
+    console.log(filters);
+    cargarAnimales(filters);
+  }
 
   return (
     <Paper sx={{ width: '100%' }}>
@@ -155,7 +163,9 @@ export const RegistroAnimal = () => {
         Administración de Animales.
       </Typography>
 
-      <Box sx={{ display: 'flex', gap: 2, margin: '10px' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+        {/* <Box sx={{ display: 'flex', gap: 2, margin: '10px' }}>
         <FormControl fullWidth>
           <InputLabel id="finca-select-label">Finca</InputLabel>
           <Select
@@ -200,21 +210,28 @@ export const RegistroAnimal = () => {
             ))}
           </Select>
         </FormControl>
-      </Box>
+      </Box> */}
 
-      <Button
-        variant="contained"
-        sx={{
-          margin: '10px',
-          cursor: 'pointer',
-          borderRadius: '10px',
-          color: 'white',
-          backgroundColor: COLORS.PRIMARY,
-        }}
-        onClick={() => handleOpenModal("registrar", {})}
-      >
-        Agregar Animal
-      </Button>
+        <Button
+          variant="contained"
+          sx={{
+            margin: '10px',
+            cursor: 'pointer',
+            borderRadius: '10px',
+            color: 'white',
+            backgroundColor: COLORS.PRIMARY,
+          }}
+          onClick={() => handleOpenModal("registrar", {})}
+        >
+          Agregar Animal
+        </Button>
+
+        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+          } />
+
+      </div>
+
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -250,6 +267,10 @@ export const RegistroAnimal = () => {
         checkboxSelection
         sx={{ border: 0 }}
       />
+
+      {openFiltro && <FiltroAnimal open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
     </Paper>
   );
 };

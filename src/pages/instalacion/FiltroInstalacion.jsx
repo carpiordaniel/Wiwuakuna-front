@@ -5,20 +5,24 @@ import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 
-export const FiltroFinca = ({ open, setOnClose, setFilters }) => {
+export const FiltroInstalacion = ({ open, setOnClose, setFilters }) => {
 
-  const { responsables, getAllResponsables } = useGetAll();
+  const { responsables, getAllResponsables, dataFinca, getAllFinca,
+    tipoInstalacion, getAllTipoInstalacion
+  } = useGetAll();
 
   useEffect(() => {
     getAllResponsables();
+    getAllFinca();
+    getAllTipoInstalacion();
   }, []);
 
   const formik = useFormik({
     initialValues: {
+      tipo: null,
+      finca: null,
       nombre: null,
-      pais: null,
-      ciudad: null,
-      responsable: localStorage.getItem('USUARIO') || 'SIN RESPONSABLE',
+      responsable: localStorage.getItem('USUARIO') || '',
     },
     onSubmit: async (values) => {
       const params = Object.fromEntries(
@@ -52,6 +56,48 @@ export const FiltroFinca = ({ open, setOnClose, setFilters }) => {
         }}>
           <DialogTitle id="alert-dialog-title">Filtrar</DialogTitle>
           <Box sx={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
+            <Autocomplete
+              onChange={(event, value) => formik.setFieldValue('tipo', value?.value)}
+              name="tipo"
+              id='tipo'
+              onBlur={formik.handleBlur}
+              error={formik.touched.tipo && Boolean(formik.errors.tipo)}
+              value={tipoInstalacion.find((tipo) => tipo.value === formik.values.tipo) || null}
+              sablePortal
+              options={tipoInstalacion}
+              getOptionLabel={(option) => option.label || ''}
+              isOptionEqualToValue={(option, value) => option.value === value?.value}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Tipo"
+                  error={formik.touched.tipo && Boolean(formik.errors.tipo)}
+                  helperText={formik.touched.tipo && formik.errors.tipo}
+                />
+              )}
+            />
+
+            <Autocomplete
+              onChange={(event, value) => formik.setFieldValue('finca', value?.value)}
+              name="finca"
+              id='finca'
+              onBlur={formik.handleBlur}
+              error={formik.touched.finca && Boolean(formik.errors.finca)}
+              value={dataFinca.find((tipo) => tipo.value === formik.values.finca) || null}
+              sablePortal
+              options={dataFinca}
+              getOptionLabel={(option) => option.label || ''}
+              isOptionEqualToValue={(option, value) => option.value === value?.value}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Finca"
+                  error={formik.touched.finca && Boolean(formik.errors.finca)}
+                  helperText={formik.touched.finca && formik.errors.finca}
+                />
+              )}
+            />
+
             <TextField
               fullWidth
               label="Nombre"
@@ -61,28 +107,6 @@ export const FiltroFinca = ({ open, setOnClose, setFilters }) => {
               onBlur={formik.handleBlur}
               error={formik.touched.nombre && Boolean(formik.errors.nombre)}
               helperText={formik.touched.nombre && formik.errors.nombre}
-            />
-
-            <TextField
-              fullWidth
-              label="Pais"
-              name="pais"
-              value={formik.values.pais}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pais && Boolean(formik.errors.pais)}
-              helperText={formik.touched.pais && formik.errors.pais}
-            />
-
-            <TextField
-              fullWidth
-              label="Ciudad"
-              name="ciudad"
-              value={formik.values.ciudad}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.ciudad && Boolean(formik.errors.ciudad)}
-              helperText={formik.touched.ciudad && formik.errors.ciudad}
             />
 
             <Autocomplete

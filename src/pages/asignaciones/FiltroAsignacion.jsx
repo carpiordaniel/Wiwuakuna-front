@@ -5,20 +5,19 @@ import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 
-export const FiltroFinca = ({ open, setOnClose, setFilters }) => {
+export const FiltroAsignacion = ({ open, setOnClose, setFilters }) => {
 
-  const { responsables, getAllResponsables } = useGetAll();
+  const { responsables, getAllResponsables, dataFinca, getAllFinca } = useGetAll();
 
   useEffect(() => {
     getAllResponsables();
+    getAllFinca();
   }, []);
 
   const formik = useFormik({
     initialValues: {
-      nombre: null,
-      pais: null,
-      ciudad: null,
-      responsable: localStorage.getItem('USUARIO') || 'SIN RESPONSABLE',
+      finca: null,
+      responsable: localStorage.getItem('USUARIO') || '',
     },
     onSubmit: async (values) => {
       const params = Object.fromEntries(
@@ -52,38 +51,29 @@ export const FiltroFinca = ({ open, setOnClose, setFilters }) => {
         }}>
           <DialogTitle id="alert-dialog-title">Filtrar</DialogTitle>
           <Box sx={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
-            <TextField
-              fullWidth
-              label="Nombre"
-              name="nombre"
-              value={formik.values.nombre}
-              onChange={formik.handleChange}
+
+
+            <Autocomplete
+              onChange={(event, value) => formik.setFieldValue('finca', value?.value)}
+              name="finca"
+              id='finca'
               onBlur={formik.handleBlur}
-              error={formik.touched.nombre && Boolean(formik.errors.nombre)}
-              helperText={formik.touched.nombre && formik.errors.nombre}
+              error={formik.touched.finca && Boolean(formik.errors.finca)}
+              value={dataFinca.find((tipo) => tipo.value === formik.values.finca) || null}
+              sablePortal
+              options={dataFinca}
+              getOptionLabel={(option) => option.label || ''}
+              isOptionEqualToValue={(option, value) => option.value === value?.value}
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  label="Finca"
+                  error={formik.touched.finca && Boolean(formik.errors.finca)}
+                  helperText={formik.touched.finca && formik.errors.finca}
+                />
+              )}
             />
 
-            <TextField
-              fullWidth
-              label="Pais"
-              name="pais"
-              value={formik.values.pais}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.pais && Boolean(formik.errors.pais)}
-              helperText={formik.touched.pais && formik.errors.pais}
-            />
-
-            <TextField
-              fullWidth
-              label="Ciudad"
-              name="ciudad"
-              value={formik.values.ciudad}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-              error={formik.touched.ciudad && Boolean(formik.errors.ciudad)}
-              helperText={formik.touched.ciudad && formik.errors.ciudad}
-            />
 
             <Autocomplete
               onChange={(event, value) => formik.setFieldValue('responsable', value?.value)}

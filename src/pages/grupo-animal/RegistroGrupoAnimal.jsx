@@ -13,6 +13,9 @@ import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import axiosClient from '@/axios/apiClient';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { FiltroInstalacion } from '../instalacion/FiltroInstalacion';
+import { FiltroGrupoAnimal } from './FiltroGrupoAnimal';
 
 
 const paginationModel = { page: 0, pageSize: 5 };
@@ -26,6 +29,7 @@ export const RegistroGrupoAnimal = () => {
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
   const dataRef = useRef(null);
+  const [openFiltro, setOpenFiltro] = useState(false);
 
   const columns = [
     { field: 'id', headerName: 'Id', flex: 1 },
@@ -50,15 +54,19 @@ export const RegistroGrupoAnimal = () => {
     getAllGrupoAnimal();
   }, []);
 
-  const getAllGrupoAnimal = async () => {
+  const getAllGrupoAnimal = async (params) => {
     try {
-      const response = await axiosClient.get(`${GRUPO_ANIMAL.GET_ALL}`);
+      const response = await axiosClient.get(GRUPO_ANIMAL.GET_ALL, { params: params });
       setDataGrupoAnimal(response.data);
     } catch (error) {
       console.error(error);
     }
   };
 
+  const setFilters = (filters) => {
+    console.log(filters);
+    getAllGrupoAnimal(filters);
+  }
   const handleEliminar = (id) => {
     Swal.fire({
       title: '¿Estás seguro?',
@@ -104,11 +112,19 @@ export const RegistroGrupoAnimal = () => {
   return (
     <Paper sx={{ width: '100%' }}>
       <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de grupo animal</Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal("registrar", {})}>Agregar grupo animal</Button>
+        <Button variant="contained" sx={{
+          margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+          backgroundColor: COLORS.PRIMARY
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar grupo animal</Button>
+
+        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+          } />
+
+      </div>
+
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -142,6 +158,9 @@ export const RegistroGrupoAnimal = () => {
         checkboxSelection
         sx={{ border: 0 }}
       />
+      {openFiltro && <FiltroGrupoAnimal open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
     </Paper >
   );
 }
