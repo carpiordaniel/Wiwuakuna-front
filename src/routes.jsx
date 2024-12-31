@@ -8,7 +8,7 @@ import BubbleChartIcon from '@mui/icons-material/BubbleChart';
 import AgricultureIcon from '@mui/icons-material/Agriculture';
 import MoreTimeIcon from '@mui/icons-material/MoreTime';
 import DomainVerificationIcon from '@mui/icons-material/DomainVerification';
-import {Finca} from "./pages/finca/Finca";
+import { Finca } from "./pages/finca/Finca";
 import LogoutButton from "./components/LogoutButton";
 import { Instalacion } from "./pages/instalacion/Instalacion";
 import { RegistroProduccion } from "./pages/registro-produccion/RegistroProduccion";
@@ -47,7 +47,7 @@ export const routes = [
   {
     path: "/instalacion",
     element: <Instalacion />,
-    label: "Instalación",	
+    label: "Instalación",
     icon: <BubbleChartIcon /> // Ícono de la página "Profile"
   },
   {
@@ -86,12 +86,12 @@ export const routes = [
     label: "Lote",
     icon: <InventoryIcon /> // Ícono de la página "Profile"
   },
-  {
-    path: "/responsable",
-    element: <RegistroResponsable />,
-    label: "Responsable",
-    icon: <EngineeringIcon /> // Ícono de la página "Profile"
-  },
+  // {
+  //   path: "/responsable",
+  //   element: <RegistroResponsable />,
+  //   label: "Responsable",
+  //   icon: <EngineeringIcon /> // Ícono de la página "Profile"
+  // },
   {
     path: "/asignaciones",
     element: <Asignaciones />,

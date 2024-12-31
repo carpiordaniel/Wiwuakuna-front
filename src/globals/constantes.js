@@ -93,6 +93,8 @@ export const REPRODUCCION = {
   DELETE: `${URL_BASE}/api/registros/reproduccion`,
 };
 
+
+
 export const LISTA_SEXO_ANIMAL = [
   { label: 'MACHO', value: 'MACHO' },
   { label: 'HEMBRA', value: 'HEMBRA' },

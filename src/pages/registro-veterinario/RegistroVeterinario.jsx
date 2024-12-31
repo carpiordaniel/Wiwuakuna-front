@@ -5,28 +5,25 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS } from '../../globals/constantes';
+import { COLORS, FINCAS, VETERINARIO } from '../../globals/constantes';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import { CrearRegistroVeterinario } from './CrearRegistroVeterinario';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
-
-
-const rows = [
-  { id: 1, animal: 'Animal 1', tipo: 'Tipo 1', enfermedad: 'Enfermedad 1', diagnostico: 'Diagnostico 1', tratamiento: 'Tratamiento 1', medicamento: 'Medicamento 1', dias_tratamiento: '1', notas: 'Notas 1', estado: 'Estado 1' },
-  { id: 2, animal: 'Animal 2', tipo: 'Tipo 2', enfermedad: 'Enfermedad 2', diagnostico: 'Diagnostico 2', tratamiento: 'Tratamiento 2', medicamento: 'Medicamento 2', dias_tratamiento: '2', notas: 'Notas 2', estado: 'Estado 2' },
-  { id: 3, animal: 'Animal 3', tipo: 'Tipo 3', enfermedad: 'Enfermedad 3', diagnostico: 'Diagnostico 3', tratamiento: 'Tratamiento 3', medicamento: 'Medicamento 3', dias_tratamiento: '3', notas: 'Notas 3', estado: 'Estado 3' },
-];
+import axiosClient from '@/axios/apiClient';
+import { FiltroVeterinario } from './FiltroVeterinario';
 
 const paginationModel = { page: 0, pageSize: 5 };
 
 
 export const RegistroVeterinario = () => {
+  const [openFiltro, setOpenFiltro] = useState(false);
 
   const [open, setOpen] = useState(false);
-  const [dataFinca, setDataFinca] = useState([]);
+  const [dataVeterinario, setDataVeterinario] = useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
@@ -34,15 +31,18 @@ export const RegistroVeterinario = () => {
 
 
   const columns = [
+    { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'animal', headerName: 'Animal', flex: 1 },
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
     { field: 'enfermedad', headerName: 'Enfermedad', flex: 1 },
     { field: 'diagnostico', headerName: 'Diagnostico', flex: 1 },
     { field: 'tratamiento', headerName: 'Tratamiento', flex: 1 },
     { field: 'medicamento', headerName: 'Medicamento', flex: 1 },
-    { field: 'dias_tratamiento', headerName: 'Dias de tratamiento', flex: 1 },
-    { field: 'notas', headerName: 'Notas', flex: 1 },
+    { field: 'dias', headerName: 'Dias de tratamiento', flex: 1 },
     { field: 'estado', headerName: 'Estado', flex: 1 },
+    { field: 'responsable', headerName: 'Responsable', flex: 1 },
+    { field: 'veterinario', headerName: 'Veterinario', flex: 1 },
+    { field: 'fecha', headerName: 'Fecha', flex: 1 },
 
     {
       field: 'action',
@@ -50,7 +50,7 @@ export const RegistroVeterinario = () => {
       flex: 1,
       renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar")} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
           <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
 
@@ -64,11 +64,11 @@ export const RegistroVeterinario = () => {
     getAllVeterinarios();
   }, []);
 
-  const getAllVeterinarios = async () => {
+  const getAllVeterinarios = async (params) => {
     try {
-      const response = await axios.get(`${FINCAS.GET_FINCA}`);
+      const response = await axiosClient.get(VETERINARIO.GET_ALL, { params: params });
       console.log(response.data);
-      setDataFinca(response.data);
+      setDataVeterinario(response.data);
     } catch (error) {
       console.error(error);
     }
@@ -85,13 +85,28 @@ export const RegistroVeterinario = () => {
       confirmButtonText: 'Sí, eliminar',
     }).then((result) => {
       if (result.isConfirmed) {
-        const response = axios.delete(`${FINCAS.DELETE_FINCA}/${id}`);
-        Swal.fire('¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error');
+        const response = axiosClient.delete(`${VETERINARIO.DELETE}/${id}`);
+        response.then((data) => {
+          Swal.fire({
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          });
+          data.status === 204 && getAllVeterinarios()
+        })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Error:',
+              text: error.response.data.message,
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+            });
+          });
       }
     });
-
-
   }
+
   const handleOpenModal = (accion, data) => {
     setAccion(accion);
     if (data != "") {
@@ -100,16 +115,28 @@ export const RegistroVeterinario = () => {
     }
   }
 
-
+  const setFilters = (filters) => {
+    console.log(filters);
+    getAllVeterinarios(filters);
+  }
 
   return (
     <Paper sx={{ width: '100%' }}>
       <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de registro de veterinario</Typography>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal("registrar", {})}>Agregar veterinario</Button>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+
+        <Button variant="contained" sx={{
+          margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+          backgroundColor: COLORS.PRIMARY
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar veterinario</Button>
+
+        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+          } />
+
+      </div>
+
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -136,13 +163,18 @@ export const RegistroVeterinario = () => {
 
       </Box >
       <DataGrid
-        rows={rows}
+        rows={dataVeterinario}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />
+
+      {openFiltro && <FiltroVeterinario open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
+
     </Paper >
   );
 }

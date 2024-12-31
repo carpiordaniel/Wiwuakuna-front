@@ -14,6 +14,7 @@ export const useGetAll = () => {
   const [tipoProduccion, setTipoProduccion] = useState([]);
   const [tipoReProduccion, setTipoReProduccion] = useState([]);
   const [estadoReProduccion, setEstadoReProduccion] = useState([]);
+  const [estadoTratamiento, setEstadoTratamiento] = useState([]);
 
 
 
@@ -109,6 +110,15 @@ export const useGetAll = () => {
     }
   }
 
+  const getEstadoTratamiento = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("estado_tratamiento"));
+      console.log(response.data);
+      setEstadoTratamiento(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
 
   return {
     responsables, getAllResponsables,
@@ -120,7 +130,8 @@ export const useGetAll = () => {
     animales, getAllAnimales,
     tipoProduccion, getAllTipoProduccion,
     tipoReProduccion, getAllTipoReProduccion,
-    estadoReProduccion, getAllEstadoReProduccion
+    estadoReProduccion, getAllEstadoReProduccion,
+    estadoTratamiento, getEstadoTratamiento
   }
 }
 
