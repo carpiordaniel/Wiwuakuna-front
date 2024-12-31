@@ -56,7 +56,7 @@ export const LOTES = {
   GET_ALL: `${URL_BASE}/api/lotes`,
   GET_BY_ID: (id) => `${URL_BASE}/api/lotes/${id}`,
   POST: `${URL_BASE}/api/lotes`,
-  PUT: (id) => `${URL_BASE}/api/lotes/${id}`,
+  PUT: `${URL_BASE}/api/lotes`,
   DELETE: `${URL_BASE}/api/lotes`,
   GET_BY_FINCA: (fincaId) => `${URL_BASE}/api/lotes/finca/${fincaId}`,
 };
@@ -74,6 +74,15 @@ export const VETERINARIO = {
   POST: `${URL_BASE}/api/registros/veterinario`,
   PUT: `${URL_BASE}/api/registros/veterinario`,
   DELETE: `${URL_BASE}/api/registros/veterinario`,
+};
+
+
+export const REPRODUCCION = {
+  GET_ALL: `${URL_BASE}/api/registros/produccion`,
+  GET_BY_FILTER: `${URL_BASE}/api/registros/produccion`,
+  POST: `${URL_BASE}/api/registros/produccion`,
+  PUT: `${URL_BASE}/api/registros/produccion`,
+  DELETE: `${URL_BASE}/api/registros/produccion`,
 };
 
 export const LISTA_SEXO_ANIMAL = [

@@ -5,52 +5,46 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
-
-import {CrearInstalacion} from './CrearRegistroProduccion';
+import { COLORS, FINCAS, REPRODUCCION } from '../../globals/constantes';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { CrearInstalacion } from './CrearRegistroProduccion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
 import axios from 'axios';
+import axiosClient from '@/axios/apiClient';
+import { FiltroReproduccion } from './FiltroProduccion';
 
-
-const rows = [
-  { id: 1, animal: 'Animal 1', tipo: 'Tipo 1', fecha: 'Fecha 1', hora: 'Hora 1', cantidad: 'Cantidad 1', nota: 'Nota 1', responsable: 'Responsable 1' },
-  { id: 2, animal: 'Animal 2', tipo: 'Tipo 2', fecha: 'Fecha 2', hora: 'Hora 2', cantidad: 'Cantidad 2', nota: 'Nota 2', responsable: 'Responsable 2' },
-  { id: 3, animal: 'Animal 3', tipo: 'Tipo 3', fecha: 'Fecha 3', hora: 'Hora 3', cantidad: 'Cantidad 3', nota: 'Nota 3', responsable: 'Responsable 3' },
-  { id: 4, animal: 'Animal 4', tipo: 'Tipo 4', fecha: 'Fecha 4', hora: 'Hora 4', cantidad: 'Cantidad 4', nota: 'Nota 4', responsable: 'Responsable 4' },
-  { id: 5, animal: 'Animal 5', tipo: 'Tipo 5', fecha: 'Fecha 5', hora: 'Hora 5', cantidad: 'Cantidad 5', nota: 'Nota 5', responsable: 'Responsable 5' },
-
-];
 
 const paginationModel = { page: 0, pageSize: 5 };
 
 
 export const RegistroProduccion = () => {
-
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const [openFiltro, setOpenFiltro] = useState(false);
+  const [open, setOpen] = useState(false);
+  const [dataReproduccion, setDataReproduccion] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
+  const dataRef = useRef(null);
 
   const columns = [
+    { field: 'id', headerName: 'Id', flex: 1 },
     { field: 'animal', headerName: 'Animal', flex: 1 },
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
     { field: 'fecha', headerName: 'Fecha', flex: 1 },
-    { field: 'hora', headerName: 'Hora', flex: 1 },
     { field: 'cantidad', headerName: 'Cantidad', flex: 1 },
     { field: 'nota', headerName: 'Nota', flex: 1 },
     { field: 'responsable', headerName: 'Responsable', flex: 1 },
-    
+
     {
       field: 'action',
       headerName: 'Action',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar", params.row)} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
 
 
@@ -59,22 +53,21 @@ export const RegistroProduccion = () => {
   ];
 
 
-  useEffect( () => {
-    getAllFinca();
-  }, [] );
+  useEffect(() => {
+    getAllReproduccion();
+  }, []);
 
-  const getAllFinca = async () => {
+  const getAllReproduccion = async (params) => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axiosClient.get(REPRODUCCION.GET_ALL, { params: params });
+      setDataReproduccion(response.data);
+    } catch (error) {
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -82,31 +75,60 @@ export const RegistroProduccion = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axiosClient.delete(`${REPRODUCCION.DELETE}/${id}`);
+        response.then((data) => {
+          Swal.fire({
+            title: '¡Completado!',
+            text: data.status === 204 ? 'Se eliminó correctamente ' : 'No se pudo eliminar',
+            icon: data.status === 204 ? 'success' : 'error',
+            confirmButtonColor: '#3085d6',
+          });
+          data.status === 204 && getAllReproduccion()
+        })
+          .catch((error) => {
+            Swal.fire({
+              title: 'Error:',
+              text: error.response.data.message,
+              icon: 'error',
+              confirmButtonColor: '#3085d6',
+            });
+          });
       }
-    } );
-
-
+    });
   }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+
+
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
       handleOpen();
     }
   }
 
+  const setFilters = (filters) => {
+    console.log(filters);
+    getAllReproduccion(filters);
+  }
 
   return (
     <Paper sx={{ width: '100%' }}>
       <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de registro de producción</Typography>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
-      <Button variant="contained" sx={{
-        margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
-        backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar registro</Button>
+        <Button variant="contained" sx={{
+          margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+          backgroundColor: COLORS.PRIMARY
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar registro</Button>
+
+        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
+          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+          } />
+
+      </div>
+
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -127,19 +149,30 @@ export const RegistroProduccion = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearInstalacion accion={accion} />
+            <CrearInstalacion accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllReproduccion={getAllReproduccion} />
+
           </Box>
         </Modal>
 
       </Box >
       <DataGrid
-        rows={rows}
+        rows={dataReproduccion}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />
+
+
+
+
+
+      {openFiltro && <FiltroReproduccion open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
+
+
     </Paper >
   );
 }

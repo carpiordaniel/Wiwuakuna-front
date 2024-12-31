@@ -8,6 +8,7 @@ import { CrearLote } from './CrearLote';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { FiltroLote } from './FiltroLote';
 
 export const RegistroLote = () => {
   const [open, setOpen] = useState(false);
@@ -15,13 +16,14 @@ export const RegistroLote = () => {
   const paginationModel = { page: 0, pageSize: 5 };
   const [accion, setAccion] = useState("");
   const dataRef = useRef(null);
+  const [openFiltro, setOpenFiltro] = useState(false);
 
 
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
   const columns = [
-    { field: 'ìd', headerName: 'Id', flex: 1 },
+    { field: 'id', headerName: 'Id', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'tipo_ganado', headerName: 'Tipo Ganado', flex: 1 },
     { field: 'finca', headerName: 'Finca', flex: 1 },
@@ -90,10 +92,18 @@ export const RegistroLote = () => {
     });
   }
 
-  const handleOpenModal = (dato) => {
-    setAccion(dato);
-    handleOpen();
-  };
+  const handleOpenModal = (accion, data) => {
+    setAccion(accion);
+    if (data != "") {
+      dataRef.current = data;
+      handleOpen();
+    }
+  }
+
+  const setFilters = (filters) => {
+    console.log(filters);
+    cargarLotes(filters);
+  }
 
   return (
     <Paper sx={{ width: '100%' }}>
@@ -103,7 +113,7 @@ export const RegistroLote = () => {
         <Button variant="contained" sx={{
           margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
           backgroundColor: COLORS.PRIMARY
-        }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar Lote</Button>
         <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
           sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
           } />
@@ -145,6 +155,12 @@ export const RegistroLote = () => {
         checkboxSelection
         sx={{ border: 0 }}
       />
+
+
+      {openFiltro && <FiltroLote open={openFiltro}
+        setOnClose={() => setOpenFiltro(false)}
+        setFilters={setFilters} />}
+
     </Paper>
   );
 };

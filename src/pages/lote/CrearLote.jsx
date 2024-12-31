@@ -1,65 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, FINCAS, DICCIONARIOS } from '../../globals/constantes';
+import { COLORS, FINCAS, DICCIONARIOS, LOTES } from '../../globals/constantes';
 import { crearLoteValidationSchema } from './validacion'; // Importa el esquema
 import axiosClient from '../../axios/apiClient';
 import Swal from 'sweetalert2';
+import { useGetAll } from '@/components/useGetAll';
 
-export const CrearLote = ({ accion = "registrar", data, fincaId }) => {
-  const [tiposGanado, setTiposGanado] = useState([]);
+export const CrearLote = ({ accion = "registrar", data, fincaId, cargarLotes }) => {
+
+  const { dataFinca, getAllFinca,
+    tipoAnimal, getTipoAnimal,
+  } = useGetAll();
+
 
   useEffect(() => {
-    cargarTiposGanado();
+    getTipoAnimal();
+    getAllFinca();
   }, []);
 
-  const cargarTiposGanado = async () => {
-    try {
-      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("TIPO_GANADO"));
-      setTiposGanado(response.data.map((tipo) => tipo.descripcion));
-    } catch (error) {
-      console.error("Error al cargar tipos de ganado:", error);
-    }
-  };
 
   const formik = useFormik({
     initialValues: {
+      id: data?.id || '',
       nombre: data?.nombre || '',
-      tipoGanado: data?.tipo_ganado || '',
+      tipo_ganado: data?.tipo_ganado?.toString() || '',
+      finca: data?.finca || '',
     },
     validationSchema: crearLoteValidationSchema,
     onSubmit: async (values) => {
+      let newValues = values
+      if (accion == "registrar") {
+        console.log("registrar")
+        const { nombre, tipo_ganado, finca } = values;
+        newValues = { nombre, tipo_ganado, finca }
+      }
       try {
-        const payload = {
-          nombre: values.nombre,
-          tipo_ganado: tiposGanado.findIndex((tipo) => tipo === values.tipoGanado) + 1,
-          finca: fincaId,
-        };
-
-        const response = accion === "editar"
-          ? await axiosClient.put(`${FINCAS.PUT_FINCA}${data.id}`, payload)
-          : await axiosClient.post(FINCAS.POST_FINCA, payload);
+        const response = accion === "registrar"
+          ? await axiosClient.post(`${LOTES.POST}`, newValues)
+          : await axiosClient.put(`${LOTES.PUT}/${values.id}`, values);
 
         Swal.fire({
-          icon: response.status === 200 || response.status === 201 ? 'success' : 'error',
-          title: response.status === 200 || response.status === 201
-            ? 'Lote guardado correctamente'
-            : 'Error al guardar el lote',
+          icon: response.status === 200 ? 'success' : 'error',
+          title: response.status === 200 ? `${accion === "registrar" ? 'Creada correctamente' : 'Actualizada correctamente'}` : `${accion === "registrar" ? 'Error al crear' : 'Error al actualizar'}`,
           showConfirmButton: false,
           timer: 2000,
         });
       } catch (error) {
-        console.error('Error al enviar el formulario:', error);
         Swal.fire({
           icon: 'error',
-          title: 'Hubo un error al procesar la solicitud',
+          title: 'Error:',
+          text: error.response.data.message,
           showConfirmButton: false,
-          timer: 2000,
+          timer: 3000,
         });
       }
+      finally {
+        formik.resetForm();
+        cargarLotes();
+      }
+
     },
   });
-
   return (
     <div>
       <Box
@@ -83,17 +85,42 @@ export const CrearLote = ({ accion = "registrar", data, fincaId }) => {
           />
 
           <Autocomplete
-            disablePortal
-            options={tiposGanado}
-            value={formik.values.tipoGanado}
-            onChange={(event, newValue) => formik.setFieldValue('tipoGanado', newValue)}
+            onChange={(event, value) => formik.setFieldValue('tipo_ganado', value?.value)}
+            name="tipo_ganado"
+            id='tipo_ganado'
+            onBlur={formik.handleBlur}
+            error={formik.touched.tipo_ganado && Boolean(formik.errors.tipo_ganado)}
+            value={tipoAnimal.find((item) => item.value === formik.values.tipo_ganado) || null} // Selecciona el objeto correspondiente
+            sablePortal
+            options={tipoAnimal}
+            getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo_ganado)
+            isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
             renderInput={(params) => (
               <TextField
                 {...params}
-                label="Tipo de Ganado"
-                name="tipoGanado"
-                error={formik.touched.tipoGanado && Boolean(formik.errors.tipoGanado)}
-                helperText={formik.touched.tipoGanado && formik.errors.tipoGanado}
+                label="Tipo de ganado"
+                error={formik.touched.tipo_ganado && Boolean(formik.errors.tipo_ganado)} // Muestra el error
+                helperText={formik.touched.tipo_ganado && formik.errors.tipo_ganado} // Muestra el texto de ayuda del error
+              />
+            )}
+          />
+          <Autocomplete
+            onChange={(event, value) => formik.setFieldValue('finca', value?.value)}
+            name="finca"
+            id='finca'
+            onBlur={formik.handleBlur}
+            error={formik.touched.finca && Boolean(formik.errors.finca)}
+            value={dataFinca.find((finca) => finca.value === formik.values.finca) || null} // Selecciona el objeto correspondiente
+            sablePortal
+            options={dataFinca}
+            getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la finca)
+            isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
+            renderInput={(params) => (
+              <TextField
+                {...params}
+                label="Finca"
+                error={formik.touched.finca && Boolean(formik.errors.finca)} // Muestra el error
+                helperText={formik.touched.finca && formik.errors.finca} // Muestra el texto de ayuda del error
               />
             )}
           />
