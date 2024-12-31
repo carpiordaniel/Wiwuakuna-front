@@ -77,12 +77,20 @@ export const VETERINARIO = {
 };
 
 
-export const REPRODUCCION = {
+export const PRODUCCION = {
   GET_ALL: `${URL_BASE}/api/registros/produccion`,
   GET_BY_FILTER: `${URL_BASE}/api/registros/produccion`,
   POST: `${URL_BASE}/api/registros/produccion`,
   PUT: `${URL_BASE}/api/registros/produccion`,
   DELETE: `${URL_BASE}/api/registros/produccion`,
+};
+
+export const REPRODUCCION = {
+  GET_ALL: `${URL_BASE}/api/registros/reproduccion`,
+  GET_BY_FILTER: `${URL_BASE}/api/registros/reproduccion`,
+  POST: `${URL_BASE}/api/registros/reproduccion`,
+  PUT: `${URL_BASE}/api/registros/reproduccion`,
+  DELETE: `${URL_BASE}/api/registros/reproduccion`,
 };
 
 export const LISTA_SEXO_ANIMAL = [

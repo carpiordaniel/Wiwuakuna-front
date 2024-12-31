@@ -5,9 +5,9 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS, REPRODUCCION } from '../../globals/constantes';
+import { COLORS, PRODUCCION } from '../../globals/constantes';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { CrearInstalacion } from './CrearRegistroProduccion';
+import { CrearRegistroProduccion } from './CrearRegistroProduccion';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
@@ -22,7 +22,7 @@ const paginationModel = { page: 0, pageSize: 5 };
 export const RegistroProduccion = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
   const [open, setOpen] = useState(false);
-  const [dataReproduccion, setDataReproduccion] = useState([]);
+  const [dataProduccion, setDataProduccion] = useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
@@ -54,13 +54,13 @@ export const RegistroProduccion = () => {
 
 
   useEffect(() => {
-    getAllReproduccion();
+    getAllProduccion();
   }, []);
 
-  const getAllReproduccion = async (params) => {
+  const getAllProduccion = async (params) => {
     try {
-      const response = await axiosClient.get(REPRODUCCION.GET_ALL, { params: params });
-      setDataReproduccion(response.data);
+      const response = await axiosClient.get(PRODUCCION.GET_ALL, { params: params });
+      setDataProduccion(response.data);
     } catch (error) {
     }
   };
@@ -77,7 +77,7 @@ export const RegistroProduccion = () => {
       confirmButtonText: 'Sí, eliminar',
     }).then((result) => {
       if (result.isConfirmed) {
-        const response = axiosClient.delete(`${REPRODUCCION.DELETE}/${id}`);
+        const response = axiosClient.delete(`${PRODUCCION.DELETE}/${id}`);
         response.then((data) => {
           Swal.fire({
             title: '¡Completado!',
@@ -85,7 +85,7 @@ export const RegistroProduccion = () => {
             icon: data.status === 204 ? 'success' : 'error',
             confirmButtonColor: '#3085d6',
           });
-          data.status === 204 && getAllReproduccion()
+          data.status === 204 && getAllProduccion()
         })
           .catch((error) => {
             Swal.fire({
@@ -110,7 +110,7 @@ export const RegistroProduccion = () => {
 
   const setFilters = (filters) => {
     console.log(filters);
-    getAllReproduccion(filters);
+    getAllProduccion(filters);
   }
 
   return (
@@ -149,14 +149,14 @@ export const RegistroProduccion = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearInstalacion accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllReproduccion={getAllReproduccion} />
+            <CrearRegistroProduccion accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllProduccion={getAllProduccion} />
 
           </Box>
         </Modal>
 
       </Box >
       <DataGrid
-        rows={dataReproduccion}
+        rows={dataProduccion}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}

@@ -11,7 +11,10 @@ export const useGetAll = () => {
   const [dataInstalacion, setDataInstalacion] = useState([]);
   const [dataGrupoAnimal, setDataGrupoAnimal] = useState([]);
   const [animales, setAnimales] = useState([]);
-  const [tipoReproduccion, setTipoReproduccion] = useState([]);
+  const [tipoProduccion, setTipoProduccion] = useState([]);
+  const [tipoReProduccion, setTipoReProduccion] = useState([]);
+  const [estadoReProduccion, setEstadoReProduccion] = useState([]);
+
 
 
   const getAllResponsables = async () => {
@@ -78,16 +81,33 @@ export const useGetAll = () => {
     }
   };
 
-  const getAllTipoReproduccion = async () => {
+  const getAllTipoProduccion = async () => {
     try {
       const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_produccion"));
-      setTipoReproduccion(response.data.map(tipoAnimal => ({ label: tipoAnimal.nombre, value: tipoAnimal.id_tabla })));
+      setTipoProduccion(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
+
+  const getAllTipoReProduccion = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_reproduccion"));
+      setTipoReProduccion(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
     } catch (error) {
       console.error('Error al obtener las fincas:', error);
     }
   }
 
 
+  const getAllEstadoReProduccion = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("estado_reproduccion"));
+      setEstadoReProduccion(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
 
 
   return {
@@ -98,7 +118,9 @@ export const useGetAll = () => {
     dataInstalacion, getAllInstalaciones,
     dataGrupoAnimal, getAllGrupoAnimal,
     animales, getAllAnimales,
-    tipoReproduccion, getAllTipoReproduccion
+    tipoProduccion, getAllTipoProduccion,
+    tipoReProduccion, getAllTipoReProduccion,
+    estadoReProduccion, getAllEstadoReProduccion
   }
 }
 

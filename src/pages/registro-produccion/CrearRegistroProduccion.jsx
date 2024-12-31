@@ -1,24 +1,24 @@
 import React, { useEffect } from 'react';
 import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
 import { useFormik } from 'formik';
-import { COLORS, FINCAS, formatDateToYYYYMMDD, REPRODUCCION } from '../../globals/constantes';
+import { COLORS, FINCAS, formatDateToYYYYMMDD, PRODUCCION } from '../../globals/constantes';
 import { crearRegistroProduccionValidationSchema } from './validacion'; // Importa el esquema
 import axios from 'axios';
 import Swal from 'sweetalert2';
 import axiosClient from '@/axios/apiClient';
 import { useGetAll } from '@/components/useGetAll';
 
-export const CrearInstalacion = ({ accion = "registrar", data, getAllReproduccion }) => {
+export const CrearRegistroProduccion = ({ accion = "registrar", data, getAllProduccion }) => {
 
 
   const { responsables, getAllResponsables,
     animales, getAllAnimales,
-    tipoReproduccion, getAllTipoReproduccion
+    tipoProduccion, getAllTipoProduccion
   } = useGetAll();
 
   useEffect(() => {
     getAllAnimales();
-    getAllTipoReproduccion();
+    getAllTipoProduccion();
     getAllResponsables();
   }, []);
   console.log(data)
@@ -44,8 +44,8 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllReproduccio
       }
       try {
         const response = accion === "registrar"
-          ? await axiosClient.post(`${REPRODUCCION.POST}`, newValues)
-          : await axiosClient.put(`${REPRODUCCION.PUT}/${values.id}`, values);
+          ? await axiosClient.post(`${PRODUCCION.POST}`, newValues)
+          : await axiosClient.put(`${PRODUCCION.PUT}/${values.id}`, values);
 
         Swal.fire({
           icon: response.status === 200 ? 'success' : 'error',
@@ -64,7 +64,7 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllReproduccio
       }
       finally {
         formik.resetForm();
-        getAllReproduccion();
+        getAllProduccion();
       }
 
     },
@@ -78,7 +78,7 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllReproduccio
         onSubmit={formik.handleSubmit}
         sx={{ margin: '40px 10px', }}
       >
-        {JSON.stringify(formik.values)}
+        {/* {JSON.stringify(formik.values)} */}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar producción" : "Registrar producción"}
         </Typography>
@@ -112,9 +112,9 @@ export const CrearInstalacion = ({ accion = "registrar", data, getAllReproduccio
             id='tipo'
             onBlur={formik.handleBlur}
             error={formik.touched.tipo && Boolean(formik.errors.tipo)}
-            value={tipoReproduccion.find((item) => item.value === formik.values.tipo) || null} // Selecciona el objeto correspondiente
+            value={tipoProduccion.find((item) => item.value === formik.values.tipo) || null} // Selecciona el objeto correspondiente
             sablePortal
-            options={tipoReproduccion}
+            options={tipoProduccion}
             getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo)
             isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
             renderInput={(params) => (
