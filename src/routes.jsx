@@ -27,9 +27,16 @@ import WorkspacesIcon from '@mui/icons-material/Workspaces';
 import EngineeringIcon from '@mui/icons-material/Engineering';
 import { Asignaciones } from "./pages/asignaciones/Asignaciones";
 import JoinInnerIcon from '@mui/icons-material/JoinInner';
-
-
-
+import { Unidades } from "./pages/unidades/Unidades";
+import BalanceIcon from '@mui/icons-material/Balance';
+import CurrencyExchangeIcon from '@mui/icons-material/CurrencyExchange';
+import FindReplaceIcon from '@mui/icons-material/FindReplace';
+import GrainIcon from '@mui/icons-material/Grain';
+import PriceCheckIcon from '@mui/icons-material/PriceCheck';
+import { Articulos } from "./pages/articulos/Articulos";
+import { Costos } from "./pages/costos/Costos";
+import { Movimientos } from "./pages/movimientos/Movimientos";
+import { Saldos } from "./pages/saldos/Saldos";
 export const routes = [
 
   {
@@ -97,6 +104,36 @@ export const routes = [
     element: <Asignaciones />,
     label: "Asignaciones",
     icon: <JoinInnerIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/unidades",
+    element: <Unidades />,
+    label: "Unidades",
+    icon: <BalanceIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/articulos",
+    element: <Articulos />,
+    label: "Articulos",
+    icon: <GrainIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/cotos",
+    element: <Costos />,
+    label: "Costos",
+    icon: <CurrencyExchangeIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/movimientos",
+    element: <Movimientos />,
+    label: "Movimientos",
+    icon: <FindReplaceIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/saldos",
+    element: <Saldos />,
+    label: "Saldos",
+    icon: <PriceCheckIcon /> // Ícono de la página "Profile"
   },
   {
     path: "/logout",

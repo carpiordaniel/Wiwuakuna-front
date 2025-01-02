@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography } from '@mui/material';
-import { useFormik } from 'formik';
-import { crearAsignacionValidationSchema } from './validacion'; // Importa el esquema
-import Swal from 'sweetalert2';
 import { ASIGNACIONES, COLORS, FINCAS, USUARIOS } from '@/globals/constantes';
-import axiosClient from '../../axios/apiClient';
+import { Box, Button, TextField, Typography } from '@mui/material';
 import Autocomplete from '@mui/material/Autocomplete';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import axiosClient from '../../axios/apiClient';
+import { crearAsignacionValidationSchema } from './validacion'; // Importa el esquema
 export const CrearAsignacion = ({ accion = "registrar", data, getAllAsignaciones }) => {
 
   const [fincas, setFincas] = useState([]);

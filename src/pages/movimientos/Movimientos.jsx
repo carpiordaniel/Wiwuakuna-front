@@ -1,3 +1,4 @@
+import axiosClient from '@/axios/apiClient';
 import { Delete } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
@@ -5,42 +6,33 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, VETERINARIO } from '../../globals/constantes';
-
-import { CrearRegistroVeterinario } from './CrearRegistroVeterinario';
-
-import axiosClient from '@/axios/apiClient';
 import Swal from 'sweetalert2';
+import { COLORS, MOVIMIENTOS } from '../../globals/constantes';
 import "./../../style.css";
-import { FiltroVeterinario } from './FiltroVeterinario';
+import { CrearMovimientos } from './CrearMovimientos';
+import { FiltroMovimientos } from './FiltroMovimientos';
 
-const paginationModel = { page: 0, pageSize: 5 };
 
-
-export const RegistroVeterinario = () => {
+export const Movimientos = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
-
+  const paginationModel = { page: 0, pageSize: 5 };
   const [open, setOpen] = useState(false);
-  const [dataVeterinario, setDataVeterinario] = useState([]);
+  const [dataMovimientos, setDataMovimientos] = useState([]);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
   const dataRef = useRef(null);
 
-
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
-    { field: 'animal', headerName: 'Animal', flex: 1 },
+    { field: 'finca', headerName: 'Finca', flex: 1 },
+    { field: 'instalacion', headerName: 'Instalacion', flex: 1 },
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
-    { field: 'enfermedad', headerName: 'Enfermedad', flex: 1 },
-    { field: 'diagnostico', headerName: 'Diagnostico', flex: 1 },
-    { field: 'tratamiento', headerName: 'Tratamiento', flex: 1 },
-    { field: 'medicamento', headerName: 'Medicamento', flex: 1 },
-    { field: 'dias', headerName: 'Dias de tratamiento', flex: 1 },
-    { field: 'estado', headerName: 'Estado', flex: 1 },
-    { field: 'responsable', headerName: 'Responsable', flex: 1 },
-    { field: 'veterinario', headerName: 'Veterinario', flex: 1 },
     { field: 'fecha', headerName: 'Fecha', flex: 1 },
+    { field: 'articulo', headerName: 'Articulo', flex: 1 },
+    { field: 'cantidad', headerName: 'Cantidad', flex: 1 },
+    { field: 'valor', headerName: 'Valor', flex: 1 },
+    { field: 'responsable', headerName: 'Responsable', flex: 1 },
 
     {
       field: 'action',
@@ -59,16 +51,14 @@ export const RegistroVeterinario = () => {
 
 
   useEffect(() => {
-    getAllVeterinarios();
+    getAllMovimientos();
   }, []);
 
-  const getAllVeterinarios = async (params) => {
+  const getAllMovimientos = async (params) => {
     try {
-      const response = await axiosClient.get(VETERINARIO.GET_ALL, { params: params });
-      console.log(response.data);
-      setDataVeterinario(response.data);
+      const response = await axiosClient.get(MOVIMIENTOS.GET_ALL, { params: params });
+      setDataMovimientos(response.data);
     } catch (error) {
-      console.error(error);
     }
   };
 
@@ -83,7 +73,7 @@ export const RegistroVeterinario = () => {
       confirmButtonText: 'Sí, eliminar',
     }).then((result) => {
       if (result.isConfirmed) {
-        const response = axiosClient.delete(`${VETERINARIO.DELETE}/${id}`);
+        const response = axiosClient.delete(`${MOVIMIENTOS.DELETE}/${id}`);
         response.then((data) => {
           Swal.fire({
             title: '¡Completado!',
@@ -91,7 +81,7 @@ export const RegistroVeterinario = () => {
             icon: data.status === 204 ? 'success' : 'error',
             confirmButtonColor: '#3085d6',
           });
-          data.status === 204 && getAllVeterinarios()
+          data.status === 204 && getAllMovimientos()
         })
           .catch((error) => {
             Swal.fire({
@@ -105,6 +95,7 @@ export const RegistroVeterinario = () => {
     });
   }
 
+
   const handleOpenModal = (accion, data) => {
     setAccion(accion);
     if (data != "") {
@@ -115,20 +106,17 @@ export const RegistroVeterinario = () => {
 
   const setFilters = (filters) => {
     console.log(filters);
-    getAllVeterinarios(filters);
+    getAllMovimientos(filters);
   }
-
   return (
     <Paper sx={{ width: '100%' }}>
-      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de registro de veterinario</Typography>
-
+      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de instalaciones</Typography>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
         <Button variant="contained" sx={{
           margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
           backgroundColor: COLORS.PRIMARY
-        }} onClick={() => handleOpenModal("registrar", {})}>Agregar veterinario</Button>
-
+        }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
         <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
           sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
           } />
@@ -155,13 +143,13 @@ export const RegistroVeterinario = () => {
             borderRadius: '10px',
             p: 4
           }}>
-            <CrearRegistroVeterinario accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllVeterinarios={getAllVeterinarios} />
+            <CrearMovimientos accion={accion} data={accion === "editar" ? dataRef.current : {}} getAllMovimientos={getAllMovimientos} />
           </Box>
         </Modal>
 
       </Box >
       <DataGrid
-        rows={dataVeterinario}
+        rows={dataMovimientos}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
@@ -169,11 +157,12 @@ export const RegistroVeterinario = () => {
         sx={{ border: 0 }}
       />
 
-      {openFiltro && <FiltroVeterinario open={openFiltro}
+      {openFiltro && <FiltroMovimientos open={openFiltro}
         setOnClose={() => setOpenFiltro(false)}
         setFilters={setFilters} />}
 
     </Paper >
+
   );
 }
 

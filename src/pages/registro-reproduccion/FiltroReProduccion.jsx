@@ -1,9 +1,9 @@
 import { useGetAll } from '@/components/useGetAll'
 import { COLORS } from '@/globals/constantes'
-import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material'
+import { Autocomplete, Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import React, { useEffect } from 'react'
+import { useEffect } from 'react'
 
 export const FiltroReProduccion = ({ open, setOnClose, setFilters }) => {
 

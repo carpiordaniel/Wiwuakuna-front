@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import { useFormik } from 'formik';
-import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
-import Swal from 'sweetalert2';
 import { COLORS, FINCAS } from '@/globals/constantes';
+import { Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
-import Catalogos from '../catalogos/Catalogos';
+import { crearFincaValidationSchema } from './validacion'; // Importa el esquema
 
 const CrearFinca = ({ accion = "registrar", data, getAllFinca }) => {
   const formik = useFormik({

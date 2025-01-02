@@ -1,12 +1,11 @@
-import React, { useEffect } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import { useFormik } from 'formik';
-import { COLORS, FINCAS, formatDateToYYYYMMDD, PRODUCCION } from '../../globals/constantes';
-import { crearRegistroProduccionValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import axiosClient from '@/axios/apiClient';
 import { useGetAll } from '@/components/useGetAll';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
+import { COLORS, formatDateToYYYYMMDD, PRODUCCION } from '../../globals/constantes';
+import { crearRegistroProduccionValidationSchema } from './validacion'; // Importa el esquema
 
 export const CrearRegistroProduccion = ({ accion = "registrar", data, getAllProduccion }) => {
 

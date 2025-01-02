@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import { useFormik } from 'formik';
-import { COLORS, FINCAS, DICCIONARIOS, LOTES } from '../../globals/constantes';
-import { crearLoteValidationSchema } from './validacion'; // Importa el esquema
-import axiosClient from '../../axios/apiClient';
-import Swal from 'sweetalert2';
 import { useGetAll } from '@/components/useGetAll';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect } from 'react';
+import Swal from 'sweetalert2';
+import axiosClient from '../../axios/apiClient';
+import { COLORS, LOTES } from '../../globals/constantes';
+import { crearLoteValidationSchema } from './validacion'; // Importa el esquema
 
 export const CrearLote = ({ accion = "registrar", data, fincaId, cargarLotes }) => {
 

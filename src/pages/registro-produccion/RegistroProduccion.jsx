@@ -1,18 +1,16 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { DataGrid } from '@mui/x-data-grid';
-import Paper from '@mui/material/Paper';
-import { border, Grid } from '@mui/system';
-import { Box, Button, Container, Modal, Typography } from '@mui/material';
-import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, PRODUCCION } from '../../globals/constantes';
+import EditIcon from '@mui/icons-material/Edit';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { Box, Button, Modal, Typography } from '@mui/material';
+import Paper from '@mui/material/Paper';
+import { DataGrid } from '@mui/x-data-grid';
+import { useEffect, useRef, useState } from 'react';
+import { COLORS, PRODUCCION } from '../../globals/constantes';
 import { CrearRegistroProduccion } from './CrearRegistroProduccion';
 
-import "./../../style.css"
-import Swal from 'sweetalert2';
-import axios from 'axios';
 import axiosClient from '@/axios/apiClient';
+import Swal from 'sweetalert2';
+import "./../../style.css";
 import { FiltroReproduccion } from './FiltroProduccion';
 
 

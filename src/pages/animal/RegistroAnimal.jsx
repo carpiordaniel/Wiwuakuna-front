@@ -1,14 +1,13 @@
-import React, { useState, useEffect, useRef } from 'react';
+import { ANIMALES, COLORS } from '@/globals/constantes';
+import { Delete } from '@mui/icons-material';
+import EditIcon from '@mui/icons-material/Edit';
+import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
+import { Box, Button, Modal, Paper, Typography } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-import { Paper, Box, Button, Modal, Typography, Select, MenuItem, FormControl, InputLabel } from '@mui/material';
+import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
-import { FINCAS, INSTALACIONES, COLORS, ANIMALES } from '@/globals/constantes';
-import EditIcon from '@mui/icons-material/Edit';
-import { Delete } from '@mui/icons-material';
 import { CrearRegistroAnimal } from './CrearRegistroAnimal';
-import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
-import { FiltroInstalacion } from '../instalacion/FiltroInstalacion';
 import { FiltroAnimal } from './FiltroAnimal';
 
 export const RegistroAnimal = () => {

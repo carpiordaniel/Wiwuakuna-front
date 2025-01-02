@@ -93,7 +93,39 @@ export const REPRODUCCION = {
   DELETE: `${URL_BASE}/api/registros/reproduccion`,
 };
 
+export const UNIDADES = {
+  GET_ALL: `${URL_BASE}/api/unidades`,
+  POST: `${URL_BASE}/api/unidades`,
+  PUT: `${URL_BASE}/api/unidades`,
+  DELETE: `${URL_BASE}/api/unidades`,
+};
 
+export const ARTICULOS = {
+  GET_ALL: `${URL_BASE}/api/articulos`,
+  POST: `${URL_BASE}/api/articulos`,
+  PUT: `${URL_BASE}/api/articulos`,
+  DELETE: `${URL_BASE}/api/articulos`,
+};
+
+export const COSTOS = {
+  GET_ALL: `${URL_BASE}/api/costos`,
+  POST: `${URL_BASE}/api/costos`,
+  PUT: `${URL_BASE}/api/costos`,
+  DELETE: `${URL_BASE}/api/costos`,
+};
+
+
+export const MOVIMIENTOS = {
+  GET_ALL: `${URL_BASE}/api/movimientos`,
+  POST: `${URL_BASE}/api/movimientos`,
+  PUT: `${URL_BASE}/api/movimientos`,
+  DELETE: `${URL_BASE}/api/movimientos`,
+};
+
+export const SALDOS = {
+  GET_ALL: `${URL_BASE}/api/saldos`,
+  
+};
 
 export const LISTA_SEXO_ANIMAL = [
   { label: 'MACHO', value: 'MACHO' },
@@ -119,3 +151,10 @@ export const formatDateToYYYYMMDD = (date) => {
 
   return `${year}-${month}-${day}`;
 }
+
+
+export const paginationModel = {
+  page: 0,
+  pageSize: 10,
+};
+

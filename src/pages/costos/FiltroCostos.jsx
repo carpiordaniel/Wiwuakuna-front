@@ -1,23 +1,25 @@
 import { useGetAll } from '@/components/useGetAll'
 import { COLORS } from '@/globals/constantes'
-import { Autocomplete, Button, Dialog, DialogContent, DialogTitle, TextField } from '@mui/material'
+import { Autocomplete, Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField, Typography } from '@mui/material'
 import { Box } from '@mui/system'
 import { useFormik } from 'formik'
-import { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 
-export const FiltroAsignacion = ({ open, setOnClose, setFilters }) => {
+export const FiltroCostos = ({ open, setOnClose, setFilters }) => {
 
-  const { responsables, getAllResponsables, dataFinca, getAllFinca } = useGetAll();
+  const { dataFinca, getAllFinca,
+    dataArticulos, getAllArticulos,
+  } = useGetAll();
 
   useEffect(() => {
-    getAllResponsables();
+    getAllArticulos();
     getAllFinca();
   }, []);
 
   const formik = useFormik({
     initialValues: {
       finca: null,
-      responsable: localStorage.getItem('USUARIO') || '',
+      articulo: null,
     },
     onSubmit: async (values) => {
       const params = Object.fromEntries(
@@ -75,23 +77,24 @@ export const FiltroAsignacion = ({ open, setOnClose, setFilters }) => {
             />
 
 
+
             <Autocomplete
-              onChange={(event, value) => formik.setFieldValue('responsable', value?.value)}
-              name="responsable"
-              id='responsable'
+              onChange={(event, value) => formik.setFieldValue('articulo', value?.value)}
+              name="articulo"
+              id='articulo'
               onBlur={formik.handleBlur}
-              error={formik.touched.responsable && Boolean(formik.errors.responsable)}
-              value={responsables.find((tipo) => tipo.value === formik.values.responsable) || null} // Selecciona el objeto correspondiente
+              error={formik.touched.articulo && Boolean(formik.errors.articulo)}
+              value={dataArticulos.find((tipo) => tipo.value === formik.values.articulo) || null} // Selecciona el objeto correspondiente
               sablePortal
-              options={responsables}
+              options={dataArticulos}
               getOptionLabel={(option) => option.label || ''} // Muestra el label (nombre de la tipo)
               isOptionEqualToValue={(option, value) => option.value === value?.value} // Compara opciones correctamente
               renderInput={(params) => (
                 <TextField
                   {...params}
-                  label="responsable"
-                  error={formik.touched.responsable && Boolean(formik.errors.responsable)} // Muestra el error
-                  helperText={formik.touched.responsable && formik.errors.responsable} // Muestra el texto de ayuda del error
+                  label="articulo"
+                  error={formik.touched.articulo && Boolean(formik.errors.articulo)} // Muestra el error
+                  helperText={formik.touched.articulo && formik.errors.articulo} // Muestra el texto de ayuda del error
                 />
               )}
             />

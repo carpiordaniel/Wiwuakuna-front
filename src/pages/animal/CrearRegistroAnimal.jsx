@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
+import axiosClient from '@/axios/apiClient';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { ANIMALES, COLORS, DICCIONARIOS, ESTADO_ANIMAL, FINCAS, GRUPO_ANIMAL, LISTA_SEXO_ANIMAL, LOTES } from '../../globals/constantes';
 import { crearRegistroAnimalValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import axiosClient from '@/axios/apiClient';
 
 export const CrearRegistroAnimal = ({ accion = "registrar", data, cargarAnimales }) => {
 

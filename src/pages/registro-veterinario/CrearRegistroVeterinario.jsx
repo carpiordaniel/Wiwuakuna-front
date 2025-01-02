@@ -1,16 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import { useFormik } from 'formik';
-import { ANIMALES, COLORS, DICCIONARIOS, ESTADO_ANIMAL, FINCAS, formatDateToYYYYMMDD, USUARIOS, VETERINARIO } from '../../globals/constantes';
-import { crearRegistroVeterinarioValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import axiosClient from '@/axios/apiClient';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import dayjs from 'dayjs';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { ANIMALES, COLORS, DICCIONARIOS, formatDateToYYYYMMDD, USUARIOS, VETERINARIO } from '../../globals/constantes';
+import { crearRegistroVeterinarioValidationSchema } from './validacion'; // Importa el esquema
 
 export const CrearRegistroVeterinario = ({ accion = "registrar", data, getAllVeterinarios }) => {
 

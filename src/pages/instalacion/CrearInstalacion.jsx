@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
+import axiosClient from '@/axios/apiClient';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
 import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
 import { COLORS, DICCIONARIOS, FINCAS, INSTALACIONES, USUARIOS } from '../../globals/constantes';
 import { crearInstalacionValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
-import Swal from 'sweetalert2';
-import axiosClient from '@/axios/apiClient';
-import { json } from 'react-router-dom';
 
 export const CrearInstalacion = ({ accion = "registrar", data, getAllInstalaciones }) => {
   console.log(data)

@@ -1,5 +1,5 @@
 import axiosClient from '@/axios/apiClient';
-import { ANIMALES, DICCIONARIOS, FINCAS, GRUPO_ANIMAL, INSTALACIONES, USUARIOS } from '@/globals/constantes';
+import { ANIMALES, ARTICULOS, DICCIONARIOS, FINCAS, GRUPO_ANIMAL, INSTALACIONES, UNIDADES, USUARIOS } from '@/globals/constantes';
 import React, { useState } from 'react'
 
 export const useGetAll = () => {
@@ -15,6 +15,9 @@ export const useGetAll = () => {
   const [tipoReProduccion, setTipoReProduccion] = useState([]);
   const [estadoReProduccion, setEstadoReProduccion] = useState([]);
   const [estadoTratamiento, setEstadoTratamiento] = useState([]);
+  const [unidades, setUnidades] = useState([]);
+  const [dataArticulos, setDataArticulos] = useState([]);
+  const [dataTipoMovimiento, setDataTipoMovimiento] = useState([]);
 
 
 
@@ -120,6 +123,37 @@ export const useGetAll = () => {
     }
   }
 
+
+
+  const getAllUnidades = async (params) => {
+    try {
+      const response = await axiosClient.get(UNIDADES.GET_ALL, { params: params });
+      console.log(response.data);
+      setUnidades(response.data.map(item => ({ label: item.nombre, value: item.id })));
+    } catch (error) {
+    }
+  };
+
+  const getAllArticulos = async (params) => {
+    try {
+      const response = await axiosClient.get(ARTICULOS.GET_ALL, { params: params });
+      console.log(response.data);
+      setDataArticulos(response.data.map(item => ({ label: item.descripcion, value: item.codigo })));
+    } catch (error) {
+    }
+  };
+
+  const getTiposMovimiento = async () => {
+    try {
+      const response = await axiosClient.get(DICCIONARIOS.GET_BY_TABLA("tipo_movimiento"));
+      console.log(response.data);
+      setDataTipoMovimiento(response.data.map(item => ({ label: item.nombre, value: item.id_tabla })));
+    } catch (error) {
+      console.error('Error al obtener las fincas:', error);
+    }
+  }
+
+
   return {
     responsables, getAllResponsables,
     dataFinca, getAllFinca,
@@ -131,7 +165,10 @@ export const useGetAll = () => {
     tipoProduccion, getAllTipoProduccion,
     tipoReProduccion, getAllTipoReProduccion,
     estadoReProduccion, getAllEstadoReProduccion,
-    estadoTratamiento, getEstadoTratamiento
+    estadoTratamiento, getEstadoTratamiento,
+    unidades, getAllUnidades,
+    dataArticulos, getAllArticulos,
+    dataTipoMovimiento, getTiposMovimiento
   }
 }
 

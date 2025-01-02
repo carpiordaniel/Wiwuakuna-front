@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import { TextField, Button, Box, Typography, Autocomplete } from '@mui/material';
-import { useFormik } from 'formik';
-import { COLORS, DICCIONARIOS, FINCAS, GRUPO_ANIMAL, INSTALACIONES } from '../../globals/constantes';
-import { crearGrupoAnimalValidationSchema } from './validacion'; // Importa el esquema
-import axios from 'axios';
-import Swal from 'sweetalert2';
 import axiosClient from '@/axios/apiClient';
+import { Autocomplete, Box, Button, TextField, Typography } from '@mui/material';
+import { useFormik } from 'formik';
+import { useEffect, useState } from 'react';
+import Swal from 'sweetalert2';
+import { COLORS, DICCIONARIOS, GRUPO_ANIMAL, INSTALACIONES } from '../../globals/constantes';
+import { crearGrupoAnimalValidationSchema } from './validacion'; // Importa el esquema
 
 export const CrearGrupoAnimal = ({ accion = "registrar", data, getAllGrupoAnimal }) => {
   console.log(accion, data)
