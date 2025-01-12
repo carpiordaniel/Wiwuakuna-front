@@ -5,7 +5,7 @@ import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
 
-import { COLORS, FINCAS } from '@/globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, FINCAS } from '@/globals/constantes';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
@@ -14,7 +14,8 @@ import CrearFinca from './CrearFinca';
 import { FiltroFinca } from './FiltroFinca';
 
 
-const paginationModel = { page: 0, pageSize: 10 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
+
 export const Finca = () => {
 
   const [openFiltro, setOpenFiltro] = useState(false);

@@ -5,9 +5,9 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS }  from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, FINCAS } from '../../globals/constantes';
 
-import {CrearResponsable} from './CrearResponsable';
+import { CrearResponsable } from './CrearResponsable';
 
 import "./../../style.css"
 import Swal from 'sweetalert2';
@@ -22,16 +22,16 @@ const rows = [
   { id: 5, tipo: 'Tipo 5', nombre: 'Nombre 5', apellido: 'Apellido 5', correo: 'Correo 5', cedula: 'Cedula 5' },
 ];
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 
 
 export const RegistroResponsable = () => {
 
-  const [ open, setOpen ] = useState( false );
-  const [ dataFinca, setDataFinca ] = useState([]);
-  const handleOpen = () => setOpen( true );
-  const handleClose = () => setOpen( false );
-  const [ accion, setAccion ] = useState( "" );
+  const [open, setOpen] = useState(false);
+  const [dataFinca, setDataFinca] = useState([]);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const [accion, setAccion] = useState("");
 
   const columns = [
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
@@ -43,10 +43,10 @@ export const RegistroResponsable = () => {
       field: 'action',
       headerName: 'Action',
       flex: 1,
-      renderCell: ( params ) => (
+      renderCell: (params) => (
         <>
-          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal( "editar" )} />
-          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar( params.row.id )} />
+          <EditIcon color='primary' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleOpenModal("editar")} />
+          <Delete color='error' sx={{ cursor: 'pointer', margin: '5px' }} onClick={() => handleEliminar(params.row.id)} />
         </>
 
 
@@ -55,22 +55,22 @@ export const RegistroResponsable = () => {
   ];
 
 
-  useEffect( () => {
+  useEffect(() => {
     getAllFinca();
-  }, [] );
+  }, []);
 
   const getAllFinca = async () => {
     try {
-      const response = await axios.get( `${FINCAS.GET_FINCA}` );
-      console.log( response.data );
-      setDataFinca( response.data );
-    } catch ( error ) {
-      console.error( error );
+      const response = await axios.get(`${FINCAS.GET_FINCA}`);
+      console.log(response.data);
+      setDataFinca(response.data);
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const handleEliminar = ( id ) => {
-    Swal.fire( {
+  const handleEliminar = (id) => {
+    Swal.fire({
       title: '¿Estás seguro?',
       text: 'No podrás revertir esta acción.',
       icon: 'warning',
@@ -78,18 +78,18 @@ export const RegistroResponsable = () => {
       confirmButtonColor: '#3085d6',
       cancelButtonColor: '#d33',
       confirmButtonText: 'Sí, eliminar',
-    } ).then( ( result ) => {
-      if ( result.isConfirmed ) {
-        const response = axios.delete( `${FINCAS.DELETE_FINCA}/${id}` );
-        Swal.fire( '¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error' );
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const response = axios.delete(`${FINCAS.DELETE_FINCA}/${id}`);
+        Swal.fire('¡Completado!', response.status === 200 ? response.data.message : 'No se pudo eliminar', response.status === 200 ? 'success' : 'error');
       }
-    } );
+    });
 
 
   }
-  const handleOpenModal = ( dato ) => {
-    setAccion( dato );
-    if ( dato != "" ) {
+  const handleOpenModal = (dato) => {
+    setAccion(dato);
+    if (dato != "") {
       handleOpen();
     }
   }
@@ -102,7 +102,7 @@ export const RegistroResponsable = () => {
       <Button variant="contained" sx={{
         margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
         backgroundColor: COLORS.PRIMARY
-      }} onClick={() => handleOpenModal( "crear" )}>Agregar responsable</Button>
+      }} onClick={() => handleOpenModal("crear")}>Agregar responsable</Button>
 
       <Box sx={{ margin: "10px", width: '100%' }}>
 
@@ -132,7 +132,7 @@ export const RegistroResponsable = () => {
         rows={rows}
         columns={columns}
         initialState={{ pagination: { paginationModel } }}
-        pageSizeOptions={[ 5, 10 ]}
+        pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}
       />

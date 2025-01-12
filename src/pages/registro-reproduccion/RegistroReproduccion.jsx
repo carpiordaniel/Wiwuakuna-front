@@ -5,7 +5,7 @@ import { border, Grid } from '@mui/system';
 import { Box, Button, Container, Modal, Typography } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
-import { COLORS, FINCAS, REPRODUCCION } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, FINCAS, REPRODUCCION } from '../../globals/constantes';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
 
 import { CrearRegistroReproduccion } from './CrearRegistroReproduccion';
@@ -17,7 +17,7 @@ import axiosClient from '@/axios/apiClient';
 import { FiltroReProduccion } from './FiltroReProduccion';
 
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 
 
 export const RegistroReproduccion = () => {

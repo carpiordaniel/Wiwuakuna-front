@@ -1,4 +1,4 @@
-import { ANIMALES, COLORS } from '@/globals/constantes';
+import { ANIMALES, COLORS, FILAS_POR_TABLAS } from '@/globals/constantes';
 import { Delete } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import SearchOutlinedIcon from '@mui/icons-material/SearchOutlined';
@@ -13,6 +13,8 @@ import { FiltroAnimal } from './FiltroAnimal';
 export const RegistroAnimal = () => {
   const [open, setOpen] = useState(false);
   const [openFiltro, setOpenFiltro] = useState(false);
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
+
 
   const [animales, setAnimales] = useState([]);
   const [usuario, setUsuario] = useState(localStorage.getItem('USUARIO') || '');
@@ -165,7 +167,7 @@ export const RegistroAnimal = () => {
       <DataGrid
         rows={animales}
         columns={columns}
-        initialState={{ pagination: { paginationModel: { page: 0, pageSize: 5 } } }}
+        initialState={{ pagination: { paginationModel } }}
         pageSizeOptions={[5, 10]}
         checkboxSelection
         sx={{ border: 0 }}

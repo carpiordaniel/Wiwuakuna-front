@@ -5,7 +5,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, VETERINARIO } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, VETERINARIO } from '../../globals/constantes';
 
 import { CrearRegistroVeterinario } from './CrearRegistroVeterinario';
 
@@ -14,7 +14,7 @@ import Swal from 'sweetalert2';
 import "./../../style.css";
 import { FiltroVeterinario } from './FiltroVeterinario';
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 
 
 export const RegistroVeterinario = () => {

@@ -75,8 +75,8 @@ export const CrearCostos = ({ accion = "registrar", data, getAllCotos }) => {
         onSubmit={formik.handleSubmit}
         sx={{ margin: '40px 10px', }}
       >
-        {JSON.stringify(formik.values)}
-        {JSON.stringify(formik.errors)}
+        {/* {JSON.stringify(formik.values)}
+        {JSON.stringify(formik.errors)} */}
         <Typography variant="h5" mb={3} align="center">
           {accion === "editar" ? "Editar Costos" : "Registrar Costos"}
         </Typography>

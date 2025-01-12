@@ -8,15 +8,14 @@ import { useEffect, useRef, useState } from 'react';
 
 import { CrearAsignacion } from './CrearAsignacion';
 
-import { ASIGNACIONES, COLORS } from '@/globals/constantes';
+import { ASIGNACIONES, COLORS, FILAS_POR_TABLAS } from '@/globals/constantes';
 import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
 import "./../../style.css";
 import { FiltroAsignacion } from './FiltroAsignacion';
 
 
-const paginationModel = { page: 0, pageSize: 10 };
-
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 export const Asignaciones = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
 

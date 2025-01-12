@@ -7,7 +7,7 @@ import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { COLORS, MOVIMIENTOS } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, MOVIMIENTOS } from '../../globals/constantes';
 import "./../../style.css";
 import { CrearMovimientos } from './CrearMovimientos';
 import { FiltroMovimientos } from './FiltroMovimientos';
@@ -15,7 +15,7 @@ import { FiltroMovimientos } from './FiltroMovimientos';
 
 export const Movimientos = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [open, setOpen] = useState(false);
   const [dataMovimientos, setDataMovimientos] = useState([]);
   const handleOpen = () => setOpen(true);

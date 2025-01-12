@@ -158,3 +158,4 @@ export const paginationModel = {
   pageSize: 10,
 };
 
+export const FILAS_POR_TABLAS = 10;

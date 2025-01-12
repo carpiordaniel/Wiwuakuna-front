@@ -5,7 +5,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, COSTOS } from '../../globals/constantes';
+import { COLORS, COSTOS, FILAS_POR_TABLAS } from '../../globals/constantes';
 
 import axiosClient from '@/axios/apiClient';
 import Swal from 'sweetalert2';
@@ -16,7 +16,7 @@ import { FiltroCostos } from './FiltroCostos';
 
 export const Costos = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [open, setOpen] = useState(false);
   const [dataCostos, setDataCostos] = useState([]);
   const handleOpen = () => setOpen(true);

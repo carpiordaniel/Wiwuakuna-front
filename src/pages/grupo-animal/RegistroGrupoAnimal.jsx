@@ -4,7 +4,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, GRUPO_ANIMAL } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, GRUPO_ANIMAL } from '../../globals/constantes';
 
 import { CrearGrupoAnimal } from './CrearGrupoAnimal';
 
@@ -15,7 +15,7 @@ import "./../../style.css";
 import { FiltroGrupoAnimal } from './FiltroGrupoAnimal';
 
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 
 
 export const RegistroGrupoAnimal = () => {

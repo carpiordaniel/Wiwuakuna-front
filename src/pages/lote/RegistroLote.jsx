@@ -3,7 +3,7 @@ import { DataGrid } from '@mui/x-data-grid';
 import { Paper, Box, Button, Modal, Typography, FormControl, Select, MenuItem, InputLabel } from '@mui/material';
 import Swal from 'sweetalert2';
 import axiosClient from '../../axios/apiClient';
-import { FINCAS, COLORS, LOTES } from '../../globals/constantes';
+import { FINCAS, COLORS, LOTES, FILAS_POR_TABLAS } from '../../globals/constantes';
 import { CrearLote } from './CrearLote';
 import EditIcon from '@mui/icons-material/Edit';
 import { Delete } from '@mui/icons-material';
@@ -13,7 +13,7 @@ import { FiltroLote } from './FiltroLote';
 export const RegistroLote = () => {
   const [open, setOpen] = useState(false);
   const [lotes, setLotes] = useState([]);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [accion, setAccion] = useState("");
   const dataRef = useRef(null);
   const [openFiltro, setOpenFiltro] = useState(false);

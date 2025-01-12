@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useState } from 'react';
-import { SALDOS } from '../../globals/constantes';
+import { FILAS_POR_TABLAS, SALDOS } from '../../globals/constantes';
 
 
 import axiosClient from '@/axios/apiClient';
@@ -13,7 +13,7 @@ import { FiltroSaldos } from './FiltroSaldos';
 
 export const Saldos = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [dataSaldos, setDataSaldos] = useState([]);
 
   const columns = [

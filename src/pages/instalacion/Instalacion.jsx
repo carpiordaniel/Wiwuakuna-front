@@ -5,7 +5,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, INSTALACIONES } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, INSTALACIONES } from '../../globals/constantes';
 
 import { CrearInstalacion } from './CrearInstalacion';
 
@@ -17,7 +17,7 @@ import { FiltroInstalacion } from './FiltroInstalacion';
 
 export const Instalacion = () => {
   const [openFiltro, setOpenFiltro] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [open, setOpen] = useState(false);
   const [dataInstalacion, setDataInstalacion] = useState([]);
   const handleOpen = () => setOpen(true);
@@ -28,7 +28,7 @@ export const Instalacion = () => {
   const columns = [
     { field: 'id', headerName: 'ID', flex: 1 },
     { field: 'tipo', headerName: 'Tipo', flex: 1 },
-    { field: 'finca', headerName: 'Finca', flex: 1 },
+    { field: 'nfinca', headerName: 'Finca', flex: 1 },
     { field: 'nombre', headerName: 'Nombre', flex: 1 },
     { field: 'responsable', headerName: 'Responsable', flex: 1 },
 

@@ -17,7 +17,6 @@ import { paginationModel } from '../../globals/constantes';
 export const Unidades = () => {
 
   const [unidades, setUnidades] = useState([]);
-  // const paginationModel = { page: 0, pageSize: 5 };
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

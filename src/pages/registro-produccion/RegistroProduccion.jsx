@@ -5,7 +5,7 @@ import { Box, Button, Modal, Typography } from '@mui/material';
 import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
-import { COLORS, PRODUCCION } from '../../globals/constantes';
+import { COLORS, FILAS_POR_TABLAS, PRODUCCION } from '../../globals/constantes';
 import { CrearRegistroProduccion } from './CrearRegistroProduccion';
 
 import axiosClient from '@/axios/apiClient';
@@ -14,7 +14,7 @@ import "./../../style.css";
 import { FiltroReproduccion } from './FiltroProduccion';
 
 
-const paginationModel = { page: 0, pageSize: 5 };
+const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
 
 
 export const RegistroProduccion = () => {

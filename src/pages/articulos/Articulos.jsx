@@ -6,7 +6,7 @@ import Paper from '@mui/material/Paper';
 import { DataGrid } from '@mui/x-data-grid';
 import { useEffect, useRef, useState } from 'react';
 import Swal from 'sweetalert2';
-import { ARTICULOS, COLORS } from '../../globals/constantes';
+import { ARTICULOS, COLORS, FILAS_POR_TABLAS } from '../../globals/constantes';
 import "./../../style.css";
 import { CrearArticulos } from './CrearArticulos';
 
@@ -15,7 +15,7 @@ export const Articulos = () => {
 
 
   const [openFiltro, setOpenFiltro] = useState(false);
-  const paginationModel = { page: 0, pageSize: 5 };
+  const paginationModel = { page: 0, pageSize: FILAS_POR_TABLAS };
   const [open, setOpen] = useState(false);
   const [dataArticulos, setDataArticulos] = useState([]);
   const handleOpen = () => setOpen(true);
