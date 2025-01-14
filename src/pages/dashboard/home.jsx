@@ -1,278 +1,362 @@
-import React from "react";
+import axiosClient from "@/axios/apiClient";
 import {
-  Typography,
-  Card,
-  CardHeader,
-  CardBody,
-  IconButton,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  Tooltip,
-  Progress,
-  Button,
-} from "@material-tailwind/react";
-import {
-  EllipsisVerticalIcon,
-  ArrowUpIcon,
-} from "@heroicons/react/24/outline";
+  ordersOverviewData,
+  projectsTableData,
+  statisticsCardsData,
+  statisticsChartsData,
+} from "@/data";
+import { MOVIMIENTOS } from "@/globals/constantes";
 import { StatisticsCard } from "@/widgets/cards";
 import { StatisticsChart } from "@/widgets/charts";
 import {
-  statisticsCardsData,
-  statisticsChartsData,
-  projectsTableData,
-  ordersOverviewData,
-} from "@/data";
+  ArrowUpIcon,
+  EllipsisVerticalIcon,
+} from "@heroicons/react/24/outline";
 import { CheckCircleIcon, ClockIcon } from "@heroicons/react/24/solid";
-import axios from "axios";
-import { Notifications, Profile, Tables } from ".";
+import {
+  Avatar,
+  Button,
+  Card,
+  CardBody,
+  CardHeader,
+  IconButton,
+  Menu,
+  MenuHandler,
+  MenuItem,
+  MenuList,
+  Progress,
+  Tooltip,
+  Typography,
+} from "@material-tailwind/react";
+import { Camera, PieChart } from "@mui/icons-material";
+import { CardContent } from "@mui/material";
+import { Box, padding } from "@mui/system";
 import { BarChart } from "@mui/x-charts";
+import React, { useEffect, useState } from "react";
+import * as XLSX from 'xlsx';
+import AgricultureIcon from '@mui/icons-material/Agriculture';
+import { axisClasses } from '@mui/x-charts/ChartsAxis';
+import { Bar, Pie } from "react-chartjs-2";
+import { CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { Legend } from "chart.js";
+
 export function Home() {
 
+
+
+  const [dataMovimientos, setDataMovimientos] = useState([]);
+
+  useEffect(() => {
+    getAllMovimientos();
+  }, []);
+
+  const getAllMovimientos = async (params) => {
+    try {
+      const response = await axiosClient.get(MOVIMIENTOS.GET_ALL, { params: params });
+      console.log(response.data);
+      setDataMovimientos(response.data);
+    } catch (error) {
+    }
+  };
+
+  const exportToExcel = () => {
+    const worksheet = XLSX.utils.json_to_sheet(dataMovimientos);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos");
+    XLSX.writeFile(workbook, "KARDEX.xlsx");
+  };
+
+
+  const totalPorFinca = dataMovimientos.reduce((acc, item) => {
+    const { finca, valor } = item;
+    // Si la finca no existe en el acumulador, inicializarla
+    if (!acc[finca]) {
+      acc[finca] = 0;
+    }
+    // Sumar el valor al total de la finca
+    acc[finca] += valor;
+    return acc;
+  }, {});
+
+  const resultadoPorFinca = Object.entries(totalPorFinca).map(([finca, total]) => ({
+    finca: parseInt(finca, 10),
+    total
+  }));
+
+
+
+  const totalPorInstalaciones = dataMovimientos.reduce((acc, item) => {
+    const { instalacion, valor } = item;
+    if (!acc[instalacion]) {
+      acc[instalacion] = 0;
+    }
+    acc[instalacion] += valor;
+    return acc;
+  }, {});
+
+  const resultadoPorInstalaciones = Object.entries(totalPorInstalaciones).map(([instalacion, total]) => ({
+    instalacion: parseInt(instalacion, 10),
+    total
+  }));
+
+
+  const totalPorTipo = dataMovimientos.reduce((acc, item) => {
+    const { tipo, valor } = item;
+    if (!acc[tipo]) {
+      acc[tipo] = 0;
+    }
+    acc[tipo] += valor;
+    return acc;
+  }, {});
+
+  const resultadoPorTipo = Object.entries(totalPorTipo).map(([tipo, total]) => ({
+    tipo: parseInt(tipo, 10),
+    total
+  }));
+
+
+  const totalPorArticulo = dataMovimientos.reduce((acc, item) => {
+    const { responsable, valor } = item;
+    if (!acc[responsable]) {
+      acc[responsable] = 0;
+    }
+    acc[responsable] += valor;
+    return acc;
+  }, {});
+
+  const resultadoPorArticulo = Object.entries(totalPorArticulo).map(([responsable, total]) => ({
+    responsable,
+    total,
+  }));
+
+
+  const totalPorFincaYTipo = dataMovimientos.reduce((acc, item) => {
+    const { finca, tipo, valor } = item;
+    if (!acc[finca]) {
+      acc[finca] = {};
+    }
+    if (!acc[finca][tipo]) {
+      acc[finca][tipo] = 0;
+    }
+    acc[finca][tipo] += valor;
+    return acc;
+  }, {});
+
+  // Convertir el resultado en un array más legible
+  const resultadoPorFincaYTipo = Object.entries(totalPorFincaYTipo).map(([finca, tipos]) => ({
+    finca: parseInt(finca, 10),
+    tipos: Object.entries(tipos).map(([tipo, total]) => ({
+      tipo: parseInt(tipo, 10),
+      total,
+    })),
+  }));
+
+
+
+  const totalPorInstalacionesYTipo = dataMovimientos.reduce((acc, item) => {
+    const { instalacion, tipo, valor } = item;
+    if (!acc[instalacion]) {
+      acc[instalacion] = {};
+    }
+    if (!acc[instalacion][tipo]) {
+      acc[instalacion][tipo] = 0;
+    }
+    acc[instalacion][tipo] += valor;
+    return acc;
+  }, {});
+
+  const resultadoPorInstalacionesYTipo = Object.entries(totalPorInstalacionesYTipo).map(([instalacion, tipos]) => ({
+    instalacion: parseInt(instalacion, 10),
+    tipos: Object.entries(tipos).map(([tipo, total]) => ({
+      tipo: parseInt(tipo, 10),
+      total,
+    })),
+  }));
+
+
+
+
   return (
-    <div className="mt-12">
+    <div className="mt-12" style={{ display: 'flex', gap: 20, flexDirection: 'column' }}>
+      {/* {JSON.stringify(resultadoPorInstalaciones)} */}
+      <Button color="blue" onClick={() => { exportToExcel(); }}>
+        Exportar Kardex(Excel)
+      </Button>
 
-      <BarChart
-        xAxis={[
-          {
-            id: 'barCategories',
-            data: ['bar A', 'bar B', 'bar C'],
-            scaleType: 'band',
-          },
-        ]}
-        series={[
-          {
-            data: [2, 5, 3],
-          },
-        ]}
-        width={500}
-        height={300}
-      />
 
-      <div className="mb-12 grid gap-y-10 gap-x-6 md:grid-cols-2 xl:grid-cols-4">
-        {statisticsCardsData.map(({ icon, title, footer, ...rest }) => (
-          <StatisticsCard
-            key={title}
-            {...rest}
-            title={title}
-            icon={React.createElement(icon, {
-              className: "w-6 h-6 text-white",
-            })}
-            footer={
-              <Typography className="font-normal text-blue-gray-600">
-                <strong className={footer.color}>{footer.value}</strong>
-                &nbsp;{footer.label}
-              </Typography>
-            }
-          />
-        ))}
-      </div>
-      <div className="mb-6 grid grid-cols-1 gap-y-12 gap-x-6 md:grid-cols-2 xl:grid-cols-3">
-        {statisticsChartsData.map((props) => (
-          <StatisticsChart
-            key={props.title}
-            {...props}
-            footer={
-              <Typography
-                variant="small"
-                className="flex items-center font-normal text-blue-gray-600"
-              >
-                <ClockIcon strokeWidth={2} className="h-4 w-4 text-blue-gray-400" />
-                &nbsp;{props.footer}
-              </Typography>
-            }
-          />
-        ))}
-      </div>
-      <div className="mb-4 grid grid-cols-1 gap-6 xl:grid-cols-3">
-        <Card className="overflow-hidden xl:col-span-2 border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 flex items-center justify-between p-6"
-          >
-            <div>
-              <Typography variant="h6" color="blue-gray" className="mb-1">
-                Projects
-              </Typography>
-              <Typography
-                variant="small"
-                className="flex items-center gap-1 font-normal text-blue-gray-600"
-              >
-                <CheckCircleIcon strokeWidth={3} className="h-4 w-4 text-blue-gray-200" />
-                <strong>30 done</strong> this month
-              </Typography>
-            </div>
-            <Menu placement="left-start">
-              <MenuHandler>
-                <IconButton size="sm" variant="text" color="blue-gray">
-                  <EllipsisVerticalIcon
-                    strokeWidth={3}
-                    fill="currenColor"
-                    className="h-6 w-6"
-                  />
-                </IconButton>
-              </MenuHandler>
-              <MenuList>
-                <MenuItem>Action</MenuItem>
-                <MenuItem>Another Action</MenuItem>
-                <MenuItem>Something else here</MenuItem>
-              </MenuList>
-            </Menu>
-          </CardHeader>
-          <CardBody className="overflow-x-scroll px-0 pt-0 pb-2">
-            <table className="w-full min-w-[640px] table-auto">
-              <thead>
-                <tr>
-                  {["companies", "members", "budget", "completion"].map(
-                    (el) => (
-                      <th
-                        key={el}
-                        className="border-b border-blue-gray-50 py-3 px-6 text-left"
+      <hr />
+      <Card style={{ padding: 10 }}>
+
+
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          {resultadoPorFincaYTipo.map((item) => (
+            <Card sx={{ width: 10, borderRadius: 2 }} key={item.finca}>
+              <CardContent>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      borderRadius: 1,
+                      padding: 1
+                    }}>
+                      <AgricultureIcon size={16} color="#000000" />
+                    </Box>
+                    <p>
+                      Finca: {item.finca}
+                    </p>
+                  </Box>
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'space-between'
+                  }}>
+                    {/* <Typography variant="h5" component="div" fontWeight="bold">
+                    ${item.total.toFixed(2)}
+                  </Typography> */}
+
+                    {item.tipos.map((tipo) => (
+                      <Box
+                        key={tipo.tipo}
+                        sx={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}
                       >
-                        <Typography
-                          variant="small"
-                          className="text-[11px] font-medium uppercase text-blue-gray-400"
-                        >
-                          {el}
+                        <Typography variant="body1">Tipo {tipo.tipo}</Typography>
+                        <Typography variant="body1" fontWeight="bold">
+                          ${tipo.total.toFixed(2)}
                         </Typography>
-                      </th>
-                    )
-                  )}
-                </tr>
-              </thead>
-              <tbody>
-                {projectsTableData.map(
-                  ({ img, name, members, budget, completion }, key) => {
-                    const className = `py-3 px-5 ${key === projectsTableData.length - 1
-                      ? ""
-                      : "border-b border-blue-gray-50"
-                      }`;
+                      </Box>
+                    ))}
 
-                    return (
-                      <tr key={name}>
-                        <td className={className}>
-                          <div className="flex items-center gap-4">
-                            <Avatar src={img} alt={name} size="sm" />
-                            <Typography
-                              variant="small"
-                              color="blue-gray"
-                              className="font-bold"
-                            >
-                              {name}
-                            </Typography>
-                          </div>
-                        </td>
-                        <td className={className}>
-                          {members.map(({ img, name }, key) => (
-                            <Tooltip key={name} content={name}>
-                              <Avatar
-                                src={img}
-                                alt={name}
-                                size="xs"
-                                variant="circular"
-                                className={`cursor-pointer border-2 border-white ${key === 0 ? "" : "-ml-2.5"
-                                  }`}
-                              />
-                            </Tooltip>
-                          ))}
-                        </td>
-                        <td className={className}>
-                          <Typography
-                            variant="small"
-                            className="text-xs font-medium text-blue-gray-600"
-                          >
-                            {budget}
-                          </Typography>
-                        </td>
-                        <td className={className}>
-                          <div className="w-10/12">
-                            <Typography
-                              variant="small"
-                              className="mb-1 block text-xs font-medium text-blue-gray-600"
-                            >
-                              {completion}%
-                            </Typography>
-                            <Progress
-                              value={completion}
-                              variant="gradient"
-                              color={completion === 100 ? "green" : "blue"}
-                              className="h-1"
-                            />
-                          </div>
-                        </td>
-                      </tr>
-                    );
-                  }
-                )}
-              </tbody>
-            </table>
-          </CardBody>
-        </Card>
-        <Card className="border border-blue-gray-100 shadow-sm">
-          <CardHeader
-            floated={false}
-            shadow={false}
-            color="transparent"
-            className="m-0 p-6"
-          >
-            <Typography variant="h6" color="blue-gray" className="mb-2">
-              Orders Overview
-            </Typography>
-            <Typography
-              variant="small"
-              className="flex items-center gap-1 font-normal text-blue-gray-600"
-            >
-              <ArrowUpIcon
-                strokeWidth={3}
-                className="h-3.5 w-3.5 text-green-500"
-              />
-              <strong>24%</strong> this month
-            </Typography>
-          </CardHeader>
-          <CardBody className="pt-0">
-            {ordersOverviewData.map(
-              ({ icon, color, title, description }, key) => (
-                <div key={title} className="flex items-start gap-4 py-3">
-                  <div
-                    className={`relative p-1 after:absolute after:-bottom-6 after:left-2/4 after:w-0.5 after:-translate-x-2/4 after:bg-blue-gray-50 after:content-[''] ${key === ordersOverviewData.length - 1
-                      ? "after:h-0"
-                      : "after:h-4/6"
-                      }`}
+
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+
+          ))}
+        </Box>
+      </Card>
+      <Card style={{ padding: 10 }}>
+
+
+        <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
+          {resultadoPorInstalacionesYTipo.map((item) => (
+            <Card sx={{ width: 300, borderRadius: 2 }} key={item.instalacion}>
+              <CardContent>
+                <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+                  <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                    <Box
+                      sx={{
+                        backgroundColor: "rgba(25, 118, 210, 0.1)",
+                        borderRadius: 1,
+                        padding: 1,
+                      }}
+                    >
+                      <AgricultureIcon size={16} color="#000000" />
+                    </Box>
+                    <p>Instalación: {item.instalacion}</p>
+                  </Box>
+                  <Box
+                    sx={{
+                      display: "flex",
+                      alignItems: "baseline",
+                      flexDirection: "column",
+                      gap: 1,
+                    }}
                   >
-                    {React.createElement(icon, {
-                      className: `!w-5 !h-5 ${color}`,
-                    })}
-                  </div>
-                  <div>
-                    <Typography
-                      variant="small"
-                      color="blue-gray"
-                      className="block font-medium"
-                    >
-                      {title}
+                    {item.tipos.map((tipo) => (
+                      <Box
+                        key={tipo.tipo}
+                        sx={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}
+                      >
+                        <Typography variant="body1">Tipo {tipo.tipo}</Typography>
+                        <Typography variant="body1" fontWeight="bold">
+                          ${tipo.total.toFixed(2)}
+                        </Typography>
+                      </Box>
+                    ))}
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+          ))}
+        </Box>
+      </Card>
+
+      <Card style={{ padding: 10 }}>
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          {resultadoPorTipo.map((item) => (
+            <Card sx={{ width: 10, borderRadius: 2 }} key={item.tipo}>
+              <CardContent>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      borderRadius: 1,
+                      padding: 1
+                    }}>
+                      <AgricultureIcon size={16} color="#000000" />
+                    </Box>
+                    <p>
+                      Tipo: {item.tipo}
+                    </p>
+                  </Box>
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'space-between'
+                  }}>
+                    <Typography variant="h5" component="div" fontWeight="bold">
+                      ${item.total.toFixed(2)}
                     </Typography>
-                    <Typography
-                      as="span"
-                      variant="small"
-                      className="text-xs font-medium text-blue-gray-500"
-                    >
-                      {description}
-                    </Typography>
-                  </div>
-                </div>
-              )
-            )}
-          </CardBody>
-        </Card>
-      </div>
+
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+
+          ))}
+
+        </Box>
+      </Card>
 
 
-    </div>
+      <Card style={{ padding: 10 }}>
+        <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
+          {resultadoPorArticulo.map((item) => (
+            <Card sx={{ width: 10, borderRadius: 2 }} key={item.responsable}>
+              <CardContent>
+                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <Box sx={{
+                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                      borderRadius: 1,
+                      padding: 1
+                    }}>
+                      <AgricultureIcon size={16} color="#000000" />
+                    </Box>
+                    <p>
+                      Articulo: {item.responsable}
+                    </p>
+                  </Box>
+                  <Box sx={{
+                    display: 'flex',
+                    alignItems: 'baseline',
+                    justifyContent: 'space-between'
+                  }}>
+                    <Typography variant="h5" component="div" fontWeight="bold">
+                      ${item.total.toFixed(2)}
+                    </Typography>
+
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+
+          ))}
+
+        </Box>
+      </Card>
+    </div >
   );
 }
 
