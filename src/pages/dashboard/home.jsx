@@ -29,8 +29,8 @@ import {
   Typography,
 } from "@material-tailwind/react";
 import { Camera, PieChart } from "@mui/icons-material";
-import { CardContent } from "@mui/material";
-import { Box, padding } from "@mui/system";
+import { CardContent, Chip } from "@mui/material";
+import { Box, padding, Stack } from "@mui/system";
 import { BarChart } from "@mui/x-charts";
 import React, { useEffect, useState } from "react";
 import * as XLSX from 'xlsx';
@@ -39,6 +39,10 @@ import { axisClasses } from '@mui/x-charts/ChartsAxis';
 import { Bar, Pie } from "react-chartjs-2";
 import { CartesianGrid, ResponsiveContainer, XAxis, YAxis } from "recharts";
 import { Legend } from "chart.js";
+import HomeWorkIcon from '@mui/icons-material/HomeWork';
+import PersonIcon from '@mui/icons-material/Person';
+import AlignVerticalBottomIcon from '@mui/icons-material/AlignVerticalBottom';
+import FlagCircleIcon from '@mui/icons-material/FlagCircle';
 
 export function Home() {
 
@@ -101,16 +105,16 @@ export function Home() {
 
 
   const totalPorTipo = dataMovimientos.reduce((acc, item) => {
-    const { tipo, valor } = item;
-    if (!acc[tipo]) {
-      acc[tipo] = 0;
+    const { ntipo, valor } = item;
+    if (!acc[ntipo]) {
+      acc[ntipo] = 0;
     }
-    acc[tipo] += valor;
+    acc[ntipo] += valor;
     return acc;
   }, {});
 
-  const resultadoPorTipo = Object.entries(totalPorTipo).map(([tipo, total]) => ({
-    tipo: parseInt(tipo, 10),
+  const resultadoPorTipo = Object.entries(totalPorTipo).map(([ntipo, total]) => ({
+    ntipo: ntipo,
     total
   }));
 
@@ -131,20 +135,20 @@ export function Home() {
 
 
   const totalPorFincaYTipo = dataMovimientos.reduce((acc, item) => {
-    const { finca, tipo, valor } = item;
-    if (!acc[finca]) {
-      acc[finca] = {};
+    const { nfinca, tipo, valor } = item;
+    if (!acc[nfinca]) {
+      acc[nfinca] = {};
     }
-    if (!acc[finca][tipo]) {
-      acc[finca][tipo] = 0;
+    if (!acc[nfinca][tipo]) {
+      acc[nfinca][tipo] = 0;
     }
-    acc[finca][tipo] += valor;
+    acc[nfinca][tipo] += valor;
     return acc;
   }, {});
 
   // Convertir el resultado en un array más legible
-  const resultadoPorFincaYTipo = Object.entries(totalPorFincaYTipo).map(([finca, tipos]) => ({
-    finca: parseInt(finca, 10),
+  const resultadoPorFincaYTipo = Object.entries(totalPorFincaYTipo).map(([nfinca, tipos]) => ({
+    nfinca: nfinca,
     tipos: Object.entries(tipos).map(([tipo, total]) => ({
       tipo: parseInt(tipo, 10),
       total,
@@ -154,24 +158,45 @@ export function Home() {
 
 
   const totalPorInstalacionesYTipo = dataMovimientos.reduce((acc, item) => {
-    const { instalacion, tipo, valor } = item;
-    if (!acc[instalacion]) {
-      acc[instalacion] = {};
+    const { ninstalacion, tipo, valor } = item;
+    if (!acc[ninstalacion]) {
+      acc[ninstalacion] = {};
     }
-    if (!acc[instalacion][tipo]) {
-      acc[instalacion][tipo] = 0;
+    if (!acc[ninstalacion][tipo]) {
+      acc[ninstalacion][tipo] = 0;
     }
-    acc[instalacion][tipo] += valor;
+    acc[ninstalacion][tipo] += valor;
     return acc;
   }, {});
 
-  const resultadoPorInstalacionesYTipo = Object.entries(totalPorInstalacionesYTipo).map(([instalacion, tipos]) => ({
-    instalacion: parseInt(instalacion, 10),
+  const resultadoPorInstalacionesYTipo = Object.entries(totalPorInstalacionesYTipo).map(([ninstalacion, tipos]) => ({
+    ninstalacion: ninstalacion,
     tipos: Object.entries(tipos).map(([tipo, total]) => ({
       tipo: parseInt(tipo, 10),
       total,
     })),
   }));
+
+
+  const totalPorArticulos = dataMovimientos.reduce((acc, item) => {
+    const { articulo, narticulo, cantidad } = item;
+    if (!acc[articulo]) {
+      acc[articulo] = { nombre: narticulo, cantidad: 0 };
+    }
+    acc[articulo].cantidad += cantidad;
+    return acc;
+  }, {});
+
+  // Convertir el resultado en un arreglo
+  const resultadoPorArticulos = Object.entries(totalPorArticulos).map(([articulo, datos]) => ({
+    articulo,
+    nombre: datos.nombre,
+    cantidad: datos.cantidad,
+  }));
+
+  // Determinar el más vendido y el menos vendido
+  const masVendido = resultadoPorArticulos.reduce((max, item) => (item.cantidad > max.cantidad ? item : max), resultadoPorArticulos[0]);
+  const menosVendido = resultadoPorArticulos.reduce((min, item) => (item.cantidad < min.cantidad ? item : min), resultadoPorArticulos[0]);
 
 
 
@@ -185,12 +210,19 @@ export function Home() {
 
 
       <hr />
+      <Stack direction="row" spacing={1}>
+        <Chip label="Ingresos" color="success" size="small" />
+        <Chip label="Egresos" color="warning" size="small" />
+      </Stack>
       <Card style={{ padding: 10 }}>
 
 
+        <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
+          Ingresos y egresos por finca
+        </Typography>
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {resultadoPorFincaYTipo.map((item) => (
-            <Card sx={{ width: 10, borderRadius: 2 }} key={item.finca}>
+            <Card sx={{ width: 10, borderRadius: 2 }} key={item.nfinca}>
               <CardContent>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -201,14 +233,13 @@ export function Home() {
                     }}>
                       <AgricultureIcon size={16} color="#000000" />
                     </Box>
-                    <p>
-                      Finca: {item.finca}
-                    </p>
+                    <strong>
+                      Finca:
+                    </strong>{item.nfinca}
                   </Box>
                   <Box sx={{
                     display: 'flex',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between'
+                    gap: 1
                   }}>
                     {/* <Typography variant="h5" component="div" fontWeight="bold">
                     ${item.total.toFixed(2)}
@@ -217,12 +248,16 @@ export function Home() {
                     {item.tipos.map((tipo) => (
                       <Box
                         key={tipo.tipo}
-                        sx={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}
+
                       >
-                        <Typography variant="body1">Tipo {tipo.tipo}</Typography>
-                        <Typography variant="body1" fontWeight="bold">
+                        {/* <Typography variant="body1">Tipo {tipo.tipo}</Typography> */}
+                        {/* <Typography variant="body1" fontWeight="bold">
                           ${tipo.total.toFixed(2)}
-                        </Typography>
+                        </Typography> */}
+                        <Chip
+                          label={`$ ${tipo.total.toFixed(2)}`}
+                          color={tipo.tipo === 1 ? "success" : "warning"}
+                        />
                       </Box>
                     ))}
 
@@ -235,12 +270,16 @@ export function Home() {
           ))}
         </Box>
       </Card>
-      <Card style={{ padding: 10 }}>
 
+
+      <Card style={{ padding: 10 }}>
+        <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
+          Ingresos y egresos por instalación
+        </Typography>
 
         <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
           {resultadoPorInstalacionesYTipo.map((item) => (
-            <Card sx={{ width: 300, borderRadius: 2 }} key={item.instalacion}>
+            <Card sx={{ width: 300, borderRadius: 2 }} key={item.ninstalacion}>
               <CardContent>
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
@@ -251,27 +290,30 @@ export function Home() {
                         padding: 1,
                       }}
                     >
-                      <AgricultureIcon size={16} color="#000000" />
+                      <HomeWorkIcon size={16} color="#000000" />
                     </Box>
-                    <p>Instalación: {item.instalacion}</p>
+                    <strong>Instalación:</strong>{item.ninstalacion}
                   </Box>
                   <Box
                     sx={{
                       display: "flex",
-                      alignItems: "baseline",
-                      flexDirection: "column",
                       gap: 1,
                     }}
                   >
                     {item.tipos.map((tipo) => (
                       <Box
                         key={tipo.tipo}
-                        sx={{ display: "flex", justifyContent: "space-between", marginBottom: 1 }}
                       >
-                        <Typography variant="body1">Tipo {tipo.tipo}</Typography>
+                        {/* <Typography variant="body1">Tipo {tipo.tipo}</Typography>
                         <Typography variant="body1" fontWeight="bold">
                           ${tipo.total.toFixed(2)}
-                        </Typography>
+                        </Typography> */}
+
+                        <Chip
+                          label={`$ ${tipo.total.toFixed(2)}`}
+                          color={tipo.tipo === 1 ? "success" : "warning"}
+                        />
+
                       </Box>
                     ))}
                   </Box>
@@ -284,8 +326,9 @@ export function Home() {
 
       <Card style={{ padding: 10 }}>
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {resultadoPorTipo.map((item) => (
-            <Card sx={{ width: 10, borderRadius: 2 }} key={item.tipo}>
+          {resultadoPorTipo.map((item) => {
+
+            return <Card sx={{ width: 10, borderRadius: 2 }} key={item.ntipo}>
               <CardContent>
                 <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -294,11 +337,11 @@ export function Home() {
                       borderRadius: 1,
                       padding: 1
                     }}>
-                      <AgricultureIcon size={16} color="#000000" />
+                      <AlignVerticalBottomIcon size={16} color="#000000" />
                     </Box>
-                    <p>
-                      Tipo: {item.tipo}
-                    </p>
+                    <strong>
+                      Tipo:
+                    </strong>{item.ntipo}
                   </Box>
                   <Box sx={{
                     display: 'flex',
@@ -314,47 +357,81 @@ export function Home() {
               </CardContent>
             </Card>
 
-          ))}
 
+          }
+          )}
+
+          <Typography variant="h5" component="div" fontWeight="bold">
+            Profit:
+            ${
+              resultadoPorTipo.filter((item) => item.ntipo === "Ingreso").reduce((acc, item) => acc + item.total, 0).toFixed(2)
+              -
+              resultadoPorTipo.filter((item) => item.ntipo === "Egreso").reduce((acc, item) => acc + item.total, 0).toFixed(2)
+            }
+          </Typography>
         </Box>
       </Card>
 
 
       <Card style={{ padding: 10 }}>
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
-          {resultadoPorArticulo.map((item) => (
-            <Card sx={{ width: 10, borderRadius: 2 }} key={item.responsable}>
-              <CardContent>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                    <Box sx={{
-                      backgroundColor: 'rgba(25, 118, 210, 0.1)',
-                      borderRadius: 1,
-                      padding: 1
-                    }}>
-                      <AgricultureIcon size={16} color="#000000" />
-                    </Box>
-                    <p>
-                      Articulo: {item.responsable}
-                    </p>
-                  </Box>
+          <Card sx={{ width: 10, borderRadius: 2 }} >
+            <CardContent>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                   <Box sx={{
-                    display: 'flex',
-                    alignItems: 'baseline',
-                    justifyContent: 'space-between'
+                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    borderRadius: 1,
+                    padding: 1
                   }}>
-                    <Typography variant="h5" component="div" fontWeight="bold">
-                      ${item.total.toFixed(2)}
-                    </Typography>
-
+                    <FlagCircleIcon size={16} color="#000000" />
                   </Box>
+                  <div>
+                    <strong>Artículo Más vendido: </strong>
+                    <p>{masVendido?.nombre}({masVendido?.articulo})</p>
+                  </div>
                 </Box>
-              </CardContent>
-            </Card>
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  justifyContent: 'space-between'
+                }}>
+                  <Chip label={`${masVendido?.cantidad} unidades`} color="success" />
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
 
-          ))}
+          <Card sx={{ width: 10, borderRadius: 2 }} >
+            <CardContent>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                  <Box sx={{
+                    backgroundColor: 'rgba(25, 118, 210, 0.1)',
+                    borderRadius: 1,
+                    padding: 1
+                  }}>
+                    <FlagCircleIcon size={16} color="#000000" />
+                  </Box>
+                  <div>
+                    <strong>Artículo Menos vendido: </strong>
+                    <p>{menosVendido?.nombre}({menosVendido?.articulo})</p>
+                  </div>
+                </Box>
+                <Box sx={{
+                  display: 'flex',
+                  alignItems: 'baseline',
+                  justifyContent: 'space-between'
+                }}>
+                  <Chip label={`${menosVendido?.cantidad} unidades`} color="success" />
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+
 
         </Box>
+
       </Card>
     </div >
   );
