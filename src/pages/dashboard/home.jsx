@@ -218,7 +218,7 @@ export function Home() {
 
 
         <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
-          Ingresos y egresos por finca
+          Ingresos y Egresos por finca
         </Typography>
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {resultadoPorFincaYTipo.map((item) => (
@@ -274,7 +274,7 @@ export function Home() {
 
       <Card style={{ padding: 10 }}>
         <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
-          Ingresos y egresos por instalación
+          Ingresos y Egresos por instalación
         </Typography>
 
         <Box sx={{ display: "flex", gap: 4, flexWrap: "wrap" }}>
@@ -325,6 +325,10 @@ export function Home() {
       </Card>
 
       <Card style={{ padding: 10 }}>
+        <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
+          Total de Ingresos y Egresos
+        </Typography>
+
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           {resultadoPorTipo.map((item) => {
 
@@ -348,10 +352,11 @@ export function Home() {
                     alignItems: 'baseline',
                     justifyContent: 'space-between'
                   }}>
-                    <Typography variant="h5" component="div" fontWeight="bold">
-                      ${item.total.toFixed(2)}
-                    </Typography>
 
+                    <Chip
+                      label={`$ ${item.total.toFixed(2)}`}
+                      color={item.ntipo == "Ingreso" ? "success" : "warning"}
+                    />
                   </Box>
                 </Box>
               </CardContent>
@@ -374,6 +379,9 @@ export function Home() {
 
 
       <Card style={{ padding: 10 }}>
+        <Typography variant="h5" component="div" fontWeight="bold" style={{ color: '#2196f3' }}>
+          Artículos más y menos vendidos
+        </Typography>
         <Box sx={{ display: 'flex', gap: 4, flexWrap: 'wrap' }}>
           <Card sx={{ width: 10, borderRadius: 2 }} >
             <CardContent>
@@ -423,7 +431,7 @@ export function Home() {
                   alignItems: 'baseline',
                   justifyContent: 'space-between'
                 }}>
-                  <Chip label={`${menosVendido?.cantidad} unidades`} color="success" />
+                  <Chip label={`${menosVendido?.cantidad} unidades`} color="warning" />
                 </Box>
               </Box>
             </CardContent>
