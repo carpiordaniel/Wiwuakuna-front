@@ -37,6 +37,14 @@ import { Articulos } from "./pages/articulos/Articulos";
 import { Costos } from "./pages/costos/Costos";
 import { Movimientos } from "./pages/movimientos/Movimientos";
 import { Saldos } from "./pages/saldos/Saldos";
+import ReporteInventario, { PDFLink } from "./pages/reportes/ReporteInventario";
+import AssessmentIcon from '@mui/icons-material/Assessment';
+import { PDFResumenLink } from "./pages/reportes/ReporteResumenInventario";
+import { PDFAnalisisLink } from "./pages/reportes/ReporteAnalisisInventario";
+import { PDFReproduccionLink } from "./pages/reportes/PDFReproduccionLink";
+
+
+
 export const routes = [
 
   {
@@ -136,11 +144,34 @@ export const routes = [
     icon: <PriceCheckIcon /> // Ícono de la página "Profile"
   },
   {
+    path: "/reporte-inventario",
+    element: <PDFLink />,
+    label: "Reporte Inventario",
+    icon: <AssessmentIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/reporte-resumen-inventario",
+    element: <PDFResumenLink />,
+    label: "Resumen Inventario",
+    icon: <AssessmentIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/reporte-analisis-inventario",
+    element: <PDFAnalisisLink />,
+    label: "Analisis Inventario",
+    icon: <AssessmentIcon /> // Ícono de la página "Profile"
+  },
+  {
+    path: "/reporte-analisis-reproduccion",
+    element: <PDFReproduccionLink />,
+    label: "Analisis Reproducción",
+    icon: <AssessmentIcon /> // Ícono de la página "Profile"
+  },
+  {
     path: "/logout",
     element: <LogoutButton />,
     label: "Cerrar Sesión",
     icon: <Logout /> // Ícono de la página "Profile"
   },
 ];
-
 export default routes;

@@ -11,6 +11,9 @@ import { COLORS, FILAS_POR_TABLAS, MOVIMIENTOS } from '../../globals/constantes'
 import "./../../style.css";
 import { CrearMovimientos } from './CrearMovimientos';
 import { FiltroMovimientos } from './FiltroMovimientos';
+import DownloadForOfflineIcon from '@mui/icons-material/DownloadForOffline';
+import * as XLSX from 'xlsx';
+
 
 
 export const Movimientos = () => {
@@ -21,6 +24,7 @@ export const Movimientos = () => {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
   const [accion, setAccion] = useState("");
+  const [accionFiltro, setAccionFiltro] = useState("");
   const dataRef = useRef(null);
 
   const columns = [
@@ -50,6 +54,7 @@ export const Movimientos = () => {
   ];
 
 
+
   useEffect(() => {
     getAllMovimientos();
   }, []);
@@ -58,9 +63,34 @@ export const Movimientos = () => {
     try {
       const response = await axiosClient.get(MOVIMIENTOS.GET_ALL, { params: params });
       setDataMovimientos(response.data);
+      if (accionFiltro === "descargar") {
+        downloadExcel(response.data); // Llama a la función de descarga
+      }
     } catch (error) {
+    } finally {
+      setAccionFiltro("");
+      setOpenFiltro(false);
     }
   };
+
+
+  const downloadExcel = (data) => {
+    const worksheet = XLSX.utils.json_to_sheet(data);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Movimientos");
+
+    // Crear archivo Excel y descargarlo
+    const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+    const blob = new Blob([excelBuffer], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+    const link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.setAttribute("download", "movimientos.xlsx");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
 
   const handleEliminar = (id) => {
     Swal.fire({
@@ -108,18 +138,32 @@ export const Movimientos = () => {
     console.log(filters);
     getAllMovimientos(filters);
   }
+
+  const handleAccion = (accion) => {
+    console.log(accion)
+    setOpenFiltro(true)
+    setAccionFiltro(accion);
+  }
+
   return (
     <Paper sx={{ width: '100%' }}>
-      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de instalaciones</Typography>
+      <Typography variant="h6" className="font-bold mb-4" sx={{ margin: "10px" }}>Administracion de Movimientos</Typography>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
 
         <Button variant="contained" sx={{
           margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
           backgroundColor: COLORS.PRIMARY
         }} onClick={() => handleOpenModal("registrar", {})}>Agregar Instalacion</Button>
-        <SearchOutlinedIcon onClick={() => setOpenFiltro(true)}
-          sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
-          } />
+        <div>
+
+          <SearchOutlinedIcon onClick={() => handleAccion("")}
+            sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+            } />
+          <DownloadForOfflineIcon onClick={() => handleAccion("descargar")}
+            sx={{ margin: "10px", cursor: 'pointer', borderRadius: '10px', }
+            } />
+        </div>
+
 
       </div>
 
@@ -158,8 +202,14 @@ export const Movimientos = () => {
       />
 
       {openFiltro && <FiltroMovimientos open={openFiltro}
-        setOnClose={() => setOpenFiltro(false)}
-        setFilters={setFilters} />}
+        setOnClose={() => {
+          setOpenFiltro(false);
+          setAccionFiltro("");
+        }
+        }
+        setFilters={setFilters}
+        accionFiltro={accionFiltro}
+      />}
 
     </Paper >
 

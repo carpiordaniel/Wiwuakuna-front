@@ -5,7 +5,7 @@ import { Box } from '@mui/system'
 import { useFormik } from 'formik'
 import React, { useEffect, useState } from 'react'
 
-export const FiltroMovimientos = ({ open, setOnClose, setFilters }) => {
+export const FiltroMovimientos = ({ open, setOnClose, setFilters, accionFiltro }) => {
 
   const { responsables, getAllResponsables, dataFinca, getAllFinca,
     dataTipoMovimiento, getTiposMovimiento,
@@ -56,8 +56,7 @@ export const FiltroMovimientos = ({ open, setOnClose, setFilters }) => {
         <DialogContent sx={{
           padding: 2, height: '100vh', width: '500px'
         }}>
-          <DialogTitle id="alert-dialog-title">Filtrar</DialogTitle>
-
+          <DialogTitle id="alert-dialog-title">{accionFiltro == "descargar" ? "Descargar" : "Filtrar"}</DialogTitle>
 
           <Box sx={{ display: 'flex', gap: '15px', flexDirection: 'column' }}>
             <Autocomplete
@@ -122,7 +121,7 @@ export const FiltroMovimientos = ({ open, setOnClose, setFilters }) => {
                 />
               )}
             />
-            <Autocomplete
+            {/* <Autocomplete
               onChange={(event, value) => formik.setFieldValue('responsable', value?.value)}
               name="responsable"
               id='responsable'
@@ -141,14 +140,23 @@ export const FiltroMovimientos = ({ open, setOnClose, setFilters }) => {
                   helperText={formik.touched.responsable && formik.errors.responsable} // Muestra el texto de ayuda del error
                 />
               )}
-            />
+            /> */}
 
 
           </Box>
-          <Button variant="contained" sx={{
+          {accionFiltro != "descargar" && <Button variant="contained" sx={{
             margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
             backgroundColor: COLORS.PRIMARY
-          }} onClick={formik.handleSubmit}>Buscar</Button>
+          }} onClick={formik.handleSubmit}>Buscar</Button>}
+
+
+          {accionFiltro == "descargar" &&
+            <Button variant="contained" sx={{
+              margin: "10px", cursor: 'pointer', borderRadius: '10px', color: 'white',
+              backgroundColor: COLORS.PRIMARY
+            }} onClick={formik.handleSubmit}>Descargar reporte</Button>
+
+          }
         </DialogContent>
       </Dialog>
     </>
